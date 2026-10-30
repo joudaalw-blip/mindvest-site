@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mindvest</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{colors:{navy:{950:'#0A1424',900:'#0F1F35',800:'#16304B',700:'#1F5F7E'},teal:{brand:'#3FB8B0',soft:'#BAE6D3'}}}}}</script>
+<style>
+body.ar{font-family:'Cairo',sans-serif}body.en{font-family:'Inter',sans-serif}
+:focus-visible{outline:2px solid #3FB8B0;outline-offset:2px}
+@media print{body>*{display:none!important}body>#print-root{display:block!important}.no-print,.act{display:none!important}}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+</style>
+</head>
+<body class="ar bg-slate-50 text-slate-800" id="body-tag">
+
+<header class="bg-navy-950 border-b border-navy-800 sticky top-0 z-40 text-white">
+<div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+  <div class="flex items-center gap-3">
+    <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#1F5F7E"/><stop offset="1" stop-color="#7FE0C8"/></linearGradient></defs><path d="M3 34 L12 8 L20 24 L28 6 L37 34 L30 34 L27 20 L20 34 L14 22 L10 34 Z" fill="url(#g)"/></svg>
+    <div class="leading-tight" dir="ltr"><div class="text-xl font-bold font-en">Mind<span class="text-teal-brand">vest</span></div><div class="text-[10px] text-teal-soft font-en hidden sm:block">Smarter Insights. Safer Investments.</div></div>
+  </div>
+  <div class="flex items-center gap-3">
+    <button onclick="setLang(S.settings.lang==='ar'?'en':'ar')" id="lang-btn" class="bg-navy-800 hover:bg-teal-brand hover:text-navy-950 text-xs px-3 py-1.5 rounded-md font-semibold transition"></button>
+    <div class="relative">
+      <button id="avatar-btn" onclick="toggleMenu(event)" aria-haspopup="true" aria-expanded="false" aria-label="Account" class="w-10 h-10 rounded-full bg-teal-brand text-navy-950 flex items-center justify-center hover:ring-2 hover:ring-teal-soft transition">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></button>
+      <div id="profile-menu" class="hidden absolute end-0 mt-2 w-72 bg-white text-slate-800 rounded-xl border border-slate-200 shadow-xl overflow-hidden">
+        <div class="p-4 bg-navy-900 text-white"><div id="m-name" class="font-bold text-sm"></div><div id="m-email" class="text-xs text-teal-soft mt-0.5"></div><div id="m-type" class="text-[11px] mt-2 inline-block bg-navy-800 rounded px-2 py-0.5"></div></div>
+        <ul class="text-sm py-1">
+          <li><button onclick="openProfile()" class="w-full text-start px-4 py-2.5 hover:bg-slate-50" data-i="menu_profile"></button></li>
+          <li><button onclick="openSettings()" class="w-full text-start px-4 py-2.5 hover:bg-slate-50" data-i="menu_settings"></button></li>
+          <li><button onclick="confirmLogout()" class="w-full text-start px-4 py-2.5 hover:bg-red-50 text-red-700 border-t border-slate-100" data-i="menu_logout"></button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+  <div class="mb-8"><h1 class="text-2xl font-bold text-navy-900" data-i="welcome_title"></h1><p class="text-slate-600 text-sm mt-1" data-i="welcome_desc"></p></div>
+  <div id="stats" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6"></div>
+  <div id="alert" class="mb-6"></div>
+
+  <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-8">
+    <h3 class="font-bold text-navy-900 text-base mb-1" data-i="chat_header"></h3>
+    <p class="text-xs text-slate-500 mb-4" data-i="chat_sub"></p>
+    <div id="chat-log" class="bg-slate-50 border border-slate-200 rounded-lg p-4 h-64 overflow-y-auto mb-3 space-y-3 text-xs" aria-live="polite"></div>
+    <div id="chips" class="flex flex-wrap gap-2 mb-2"></div>
+    <div id="key-hint" class="text-[11px] text-slate-500 mb-3"></div>
+    <div class="flex gap-2">
+      <input id="chat-in" onkeydown="if(event.key==='Enter')sendChat()" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-xs focus:outline-none focus:border-navy-700">
+      <button id="send-btn" onclick="sendChat()" class="bg-navy-900 hover:bg-navy-700 disabled:opacity-50 text-white px-6 py-2.5 rounded-lg text-xs font-bold transition" data-i="btn_send"></button>
+    </div>
+  </section>
+
+  <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+ <div class="px-4 py-3 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
+  <div><h3 class="font-bold text-navy-900" data-i="table_header"></h3><span class="text-xs text-slate-500" data-i="table_sub"></span></div>
+  <div class="flex flex-wrap items-center gap-2"><button onclick="exportCSV()" class="border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs px-3 py-1.5 rounded-lg font-semibold" data-i="exp_csv"></button>
+   <button onclick="openCompany()" class="bg-navy-900 hover:bg-navy-700 text-white text-xs px-4 py-1.5 rounded-lg font-bold transition" data-i="btn_add"></button></div></div>
+ <div class="overflow-x-auto"><table class="w-full border-collapse"><thead id="thead"></thead><tbody id="rows" class="text-xs divide-y divide-slate-100"></tbody></table></div>
+</section>
+</main>
+
+<div id="modal" class="hidden fixed inset-0 z-50 bg-navy-950/70 flex items-center justify-center p-4" onclick="if(event.target===this)closeModal()">
+  <div id="m-panel" class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[92vh] flex flex-col" role="dialog" aria-modal="true">
+    <div class="px-5 py-3 border-b border-slate-200 flex justify-between items-center"><h2 id="m-title" class="font-bold text-navy-900"></h2><button onclick="closeModal()" aria-label="Close" class="text-slate-400 hover:text-slate-700 text-xl leading-none">&times;</button></div>
+    <div id="m-body" class="px-5 py-4 overflow-y-auto text-sm"></div>
+    <div id="m-foot" class="px-5 py-3 border-t border-slate-200 flex flex-wrap justify-end gap-2"></div>
+  </div>
+</div>
+<div id="print-root" class="hidden"></div>
+<div id="toast" class="hidden fixed bottom-6 start-1/2 -translate-x-1/2 z-[60] bg-navy-900 text-white text-xs px-4 py-2.5 rounded-lg shadow-lg"></div>
+<div id="signed-out" class="hidden fixed inset-0 z-[70] bg-navy-950 flex items-center justify-center p-6 text-center text-white">
+  <div><div class="text-3xl font-bold font-en mb-2" dir="ltr">Mind<span class="text-teal-brand">vest</span></div><p id="so-msg" class="text-sm text-teal-soft mb-6"></p>
+  <button onclick="signIn()" id="so-btn" class="bg-teal-brand hover:bg-teal-soft text-navy-950 font-bold text-sm px-6 py-2.5 rounded-lg"></button></div>
+</div>
+
+<script>
+const T={
+ar:{lang:"English",menu_profile:"المعلومات الشخصية",menu_settings:"الإعدادات",menu_logout:"تسجيل الخروج",
+org:"منظمة",ind:"فرد",acc_default:"حسابي",no_email:"لم يُضف بريد إلكتروني",
+welcome_title:"مرحباً بكم في لوحة متابعة المحفظة الاستثمارية",welcome_desc:"نظرة تحليلية شاملة ومحدّثة لأداء الشركات الناشئة في المحفظة.",
+s1:"إجمالي الشركات في المحفظة",s1s:"شركة مسجلة",s2:"شركات ذات مخاطر مرتفعة",s2s:"سيولة أقل من الحد المحدد",s3:"متوسط السيولة المتبقية",s3s:"شهر",
+al_badge:"خبير التحليل المالي",al_title:"الإنذار المبكر والتوصيات الاستراتيجية",
+al_hi:"تنبيه مالي: سيولة {n} عند مستوى مخاطر مرتفعة",al_hi_d:"الفترة النقدية المتبقية {r} شهر بمعدل حرق شهري {b} {c}، وهي أقل من حد المخاطر المرتفعة ({t} أشهر).",
+al_ok:"لا توجد شركات عند مستوى مخاطر مرتفعة",al_ok_d:"جميع الشركات تتجاوز حد السيولة المحدد ({t} أشهر).",
+btn_plan:"عرض خطة المعالجة المقترحة",btn_contact:"التواصل مع إدارة الشركة",
+chat_header:"مساعد التحليل المالي",chat_sub:"اطرح أسئلتك حول المؤشرات المالية وأداء شركات المحفظة.",chat_ph:"اكتب استفسارك المالي هنا",btn_send:"إرسال",
+chat_hello:"أهلاً بكم. أنا مساعد التحليل المالي، ويمكنني تحليل السيولة ومعدلات الحرق والمقارنة بين شركات المحفظة بناءً على بياناتها المسجلة.",
+chat_you:"أنت",chat_ai:"المحلل المالي",thinking:"جارٍ التحليل...",
+chip1:"أي الشركات أكثر خطراً؟",chip2:"قارن بين السيولة في الشركات",chip3:"ما أولويات المتابعة هذا الأسبوع؟",
+err_na:"لتفعيل المساعد أضيفوا مفتاح Anthropic API من الإعدادات.",err_rate:"تم تجاوز حد الطلبات مؤقتاً. حاولوا بعد قليل.",err_gen:"تعذّر إكمال التحليل. حاولوا مرة أخرى.",
+table_header:"قائمة الشركات الناشئة المرتبطة",table_sub:"يمكن تعديل البيانات وإضافة الشركات",btn_add:"إضافة شركة",
+th_company:"الشركة الناشئة",th_sector:"القطاع",th_runway:"السيولة المتبقية (Runway)",th_status:"التقييم المالي",th_action:"الإجراء",
+sec_fintech:"تقنية مالية",sec_edu:"تقنية تعليمية",sec_ecom:"تجارة إلكترونية",sec_health:"تقنية صحية",sec_other:"أخرى",
+st_high:"مخاطر مرتفعة",st_watch:"تحت المراقبة",st_stable:"مستقر",mo:"شهر",
+btn_recs:"مراجعة التوصيات",btn_edit:"تعديل",
+recs_t:"التوصيات: {n}",plan_t:"خطة المعالجة المقترحة: {n}",regen:"إعادة التحليل",close:"إغلاق",
+contact_t:"التواصل مع إدارة الشركة",f_company:"الشركة",f_subject:"الموضوع",f_msg:"الرسالة",f_draft:"صياغة بالذكاء الاصطناعي",f_send:"إرسال عبر البريد",no_mail:"أضيفوا بريد إدارة الشركة من خيار التعديل أولاً.",
+subj_def:"متابعة الوضع المالي والسيولة",drafting:"جارٍ الصياغة...",
+co_edit:"تعديل بيانات الشركة",co_new:"إضافة شركة",f_name_ar:"الاسم بالعربية",f_name_en:"الاسم بالإنجليزية",f_cash:"الرصيد النقدي",f_burn:"معدل الحرق الشهري",f_email:"بريد إدارة الشركة",
+save:"حفظ",cancel:"إلغاء",del:"حذف الشركة",del_q:"حذف هذه الشركة من المحفظة؟",saved:"تم الحفظ",deleted:"تم الحذف",need_name:"أدخلوا اسم الشركة.",need_num:"الحرق الشهري يجب أن يكون أكبر من صفر.",
+prof_t:"المعلومات الشخصية",f_type:"نوع الحساب",o_name:"اسم المنظمة",o_reg:"رقم السجل التجاري",o_rep:"الممثل المفوّض",i_name:"الاسم الكامل",i_id:"رقم الهوية",i_phone:"رقم الجوال",f_acc_email:"البريد الإلكتروني",
+set_t:"الإعدادات",f_lang:"اللغة",f_thr:"حد المخاطر المرتفعة (بالأشهر)",f_thr_h:"تُصنَّف الشركة مرتفعة المخاطر إذا قلّت سيولتها عن هذا الحد، وتحت المراقبة حتى ضعفه.",f_cur:"العملة",f_key:"مفتاح Anthropic API",f_key_h:"يُحفظ في هذا المتصفح فقط ويُرسل إلى Anthropic وحدها. لا تشاركوا الصفحة بعد إدخاله على جهاز عام.",err_auth:"المفتاح غير صالح. تحققوا منه في الإعدادات.",f_notif:"إشعارات التنبيه المبكر",
+out_t:"تسجيل الخروج",out_q:"هل تريدون تسجيل الخروج؟",out_btn:"تسجيل الخروج",out_msg:"تم تسجيل الخروج بنجاح.",in_btn:"تسجيل الدخول مجدداً",s2s:"الأعلى خطراً حسب التقييم",s_cash:"إجمالي النقد المتاح",s_net:"صافي الحرق الشهري",table_sub:"اضغطوا على عنوان العمود للترتيب",
+th_burn:"الحرق مقابل الإيرادات المتكررة",th_cash:"النقد المتاح",th_risk:"التقييم ودرجة المخاطر",th_data:"حداثة البيانات",th_runway:"السيولة المتبقية",
+mrr_cov:"المتكررة تغطي {x}% من المصروفات",profit:"يحقق ربحاً",f_all:"الكل",exp_csv:"تصدير CSV",exp_pdf:"طباعة / PDF",days_ago:"قبل {x} يوم",stale:"قديمة",
+btn_report:"التقرير المفصل",btn_scn:"محاكاة",btn_fr:"جاهزية الجولة",btn_ai:"تحليل بالذكاء الاصطناعي",
+al_none:"لا توجد تنبيهات نشطة.",al_off:"التنبيهات معطّلة من الإعدادات.",al_run:"السيولة {r} شهر، دون حد التنبيه ({t} أشهر)",al_rev:"انخفضت الإيرادات {x}% عن الفترة السابقة",al_burn:"ارتفع صافي الحرق {x}% عن الفترة السابقة",al_liab:"الالتزامات قصيرة الأجل تتجاوز النقد المتاح",al_stale:"لم تُحدَّث البيانات منذ {d} يوماً",
+rp_title:"التقرير المالي المفصل: {n}",src:"مصدر البيانات",upd:"آخر تحديث",src_acc:"نظام محاسبي",src_bank:"كشوف بنكية",src_mgmt:"تقارير الإدارة",src_man:"إدخال يدوي",
+sec_liq:"السيولة والتدفقات النقدية",sec_rev:"الإيرادات والربحية",sec_burn:"الحرق مقابل الإيرادات المتكررة",sec_be:"نقطة التعادل",sec_scn:"سيناريوهات السيولة",sec_cmp:"مقارنة الأداء",sec_risk:"تقييم المخاطر والامتثال",sec_ai:"التحليل بالذكاء الاصطناعي",
+m_cash:"النقد المتاح",m_stl:"الالتزامات قصيرة الأجل",m_cov:"تغطية النقد للالتزامات",m_run:"السيولة المتبقية",m_cfo:"التدفق التشغيلي الشهري",m_cfi:"التدفق الاستثماري الشهري",m_cfn:"صافي التدفق النقدي",
+m_rev:"إجمالي الإيرادات",m_mrr:"الإيرادات المتكررة",m_rec:"نسبة الإيرادات المتكررة",m_gm:"هامش الربح الإجمالي",m_opex:"المصروفات الشهرية",m_net:"صافي الحرق",m_mrrcov:"تغطية المتكررة للمصروفات",
+m_ber:"إيراد التعادل المطلوب",m_gap:"الفجوة عن الإيراد الحالي",m_bem:"أشهر حتى التعادل",
+be_ok:"الشركة تحقق تعادلاً أو ربحاً تشغيلياً حالياً.",be_never:"لا تصل الشركة إلى التعادل بمعدل النمو المدخل.",be_fund:"التعادل يتأخر عن نفاد السيولة، وتحتاج الشركة إلى تمويل إضافي.",be_ok2:"التعادل متوقع قبل نفاد السيولة وفق معدل النمو المدخل.",
+sc_opt:"متفائل",sc_base:"أساسي",sc_con:"متحفظ",sc_ass:"نمو {g}% شهرياً، المبيعات {s}%، التكاليف {c}%",sc_run:"السيولة",sc_be:"التعادل",sc_c12:"النقد بعد 12 شهراً",beyond:"أكثر من 36 شهراً",sc_note:"السيناريوهات تقديرات مبنية على بيانات الشركة وافتراضات النمو المدخلة، وليست تنبؤات مؤكدة.",
+scn_t:"محاكاة السيناريوهات المالية: {n}",scn_sales:"تغيّر المبيعات %",scn_cost:"تغيّر التكاليف %",scn_growth:"النمو الشهري %",scn_now:"قبل التغيير",scn_after:"بعد التغيير",scn_cash12:"النقد بعد 12 شهراً",scn_vs:"قبل التغيير: {v}",
+c_metric:"المؤشر",c_cur:"الحالية",c_prev:"السابقة",c_chg:"التغيّر",c_peer:"نظراء القطاع في المحفظة",c_port:"متوسط المحفظة",c_bench:"معيار القطاع",bench_h:"أدخلوا معيار القطاع من مصدركم (مثل تقرير صناعي)؛ لا تتضمن المنصة بيانات سوق جاهزة.",
+f_liq:"السيولة",f_burn:"اتجاه الحرق",f_rev:"اتجاه الإيرادات",f_liab:"الالتزامات",f_gm:"هامش الربح",f_rec:"الإيرادات المتكررة",f_data:"حداثة البيانات",f_comp:"الامتثال",
+r_liq:"السيولة تكفي {r} شهراً فقط عند معدل الحرق الحالي",r_burn:"ارتفع صافي الحرق {x}% عن الفترة السابقة",r_rev:"تغيّرت الإيرادات {x}% عن الفترة السابقة",r_liab:"الالتزامات قصيرة الأجل تعادل {x}% من النقد المتاح",r_gm:"هامش الربح الإجمالي منخفض ({x}%)",r_rec:"نسبة الإيرادات المتكررة منخفضة ({x}%)",r_data:"البيانات لم تُحدَّث منذ {x} يوماً",r_comp:"بنود الامتثال المكتملة {x} من 5",
+rk_score:"درجة المخاطر",rk_factor:"العامل",rk_why:"أسباب التعثر المحتملة",rk_none:"لا توجد عوامل خطر بارزة.",rk_method:"تُحسب الدرجة من 100 (الأعلى أخطر) بجمع نقاط العوامل الثمانية أعلاه. تُصنَّف الشركة مرتفعة المخاطر عند 55 فأكثر أو إذا قلّت سيولتها عن حد التنبيه الخاص بها.",
+cp_title:"قائمة الامتثال (يحدّثها المستخدم)",cp_reg:"السجل التجاري ساري",cp_audit:"قوائم مالية مدققة",cp_tax:"الإقرارات الضريبية محدّثة",cp_sha:"اتفاقيات المساهمين موثقة",cp_kyc:"إجراءات اعرف عميلك (KYC) مكتملة",cp_note:"تسجّل هذه القائمة ما يؤكده المستخدم، ولا تمثل استشارة قانونية ولا تضمن الامتثال النظامي. راجعوا مستشاراً قانونياً مختصاً.",
+ed_fin:"البيانات المالية الشهرية",ed_prev:"الفترة السابقة (للمقارنة)",ed_alert:"تنبيهات هذه الشركة (اتركوا الحقل فارغاً لاستخدام الافتراضي)",ed_comp:"الامتثال",
+f_cur2:"عملة الشركة",f_stl:"الالتزامات قصيرة الأجل",f_rev_in:"إجمالي الإيرادات",f_mrr_in:"الإيرادات المتكررة",f_gm_in:"هامش الربح الإجمالي %",f_opex:"إجمالي المصروفات",f_cfo:"التدفق التشغيلي",f_cfi:"التدفق الاستثماري",f_growth:"النمو الشهري المتوقع %",
+f_prev_rev:"إيرادات الفترة السابقة",f_prev_opex:"مصروفات الفترة السابقة",f_prev_cash:"النقد في الفترة السابقة",f_a_run:"تنبيه عند سيولة أقل من (أشهر)",f_a_rev:"تنبيه عند انخفاض الإيرادات %",f_a_burn:"تنبيه عند ارتفاع الحرق %",f_src:"مصدر البيانات",f_upd:"تاريخ آخر تحديث",
+fr_t:"جاهزية الجولة الاستثمارية: {n}",fr_type:"نوع الجولة",fr_target:"المبلغ المستهدف",fr_date:"الموعد المتوقع",fr_gen:"إعداد الملف بالذكاء الاصطناعي",fr_copy:"نسخ",copied:"تم النسخ",fr_note:"يُنظَّم الملف من بيانات الشركة المدخلة فقط وتُعلَّم البنود الناقصة. لا يجمع الذكاء الاصطناعي بيانات من الإنترنت.",
+f_thr:"حد تنبيه السيولة الافتراضي (بالأشهر)",f_thr_h:"يُطبَّق على الشركات التي لم يُحدَّد لها حد خاص، ويمكن تخصيصه لكل شركة من تعديل بياناتها.",f_fx:"أسعار الصرف إلى عملة الأساس",f_fx_h:"مثال: USD=3.75, EUR=4.1 . تُدخل يدوياً وليست أسعاراً مباشرة.",f_a_rev_d:"حد انخفاض الإيرادات الافتراضي %",f_a_burn_d:"حد ارتفاع الحرق الافتراضي %",f_cur:"عملة الأساس",
+need_num:"المصروفات الشهرية يجب أن تكون أكبر من صفر.",
+q1:"ما هو معدل حرق السيولة (Burn Rate) للمحفظة؟",a1:"متوسط حرق السيولة الحالي للشركات الناشئة في المحفظة هو 120,000 ريال شهرياً، مع متوسط سيولة متبقية يكفي لـ 5.7 أشهر.",
+q2:"كيف يتم تقييم مخاطر الشركات الناشئة؟",a2:"يعتمد التقييم على تحليل نسبة النقد المتاح، الالتزامات قصيرة الأجل، ومعدل نمو الإيرادات المتكررة لتحديد الشركات ذات المخاطر المرتفعة وتنبيه المستثمر مبكراً.",
+q3:"ما هي نقطة التعادل (Break-even Point) المتوقعة؟",a3:"يوضح التحليل المالي أن الشركة تحتاج للوصول إلى مبيعات بقيمة 450,000 ريال لتغطية كامل المصاريف التشغيلية وتحقيق الربحية الصافية.",
+q4:"هل يمكنني تجربة محاكاة سيناريو مالي؟",a4:"نعم، يمكنك تجربة ميزة Financial Scenario Planning من لوحة التحكم لرؤية تأثير انخفاض المبيعات أو زيادة التكاليف على السيولة فوراً.",
+key_hint:"الأسئلة الجاهزة تُجاب فوراً. للأسئلة الحرة يلزم مفتاح Anthropic API.",key_add:"إضافة المفتاح",
+btn_details:"التفاصيل",table_sub:"اضغطوا على الشركة لعرض التفاصيل",
+sum_high:"الوضع المالي يحتاج انتباهاً: السيولة تكفي {r} شهر فقط.",sum_med:"الشركة تحت المراقبة: السيولة تكفي {r} شهر.",sum_low:"الوضع مستقر: السيولة تكفي {r} شهر.",sum_profit:"الشركة تحقق ربحاً تشغيلياً حالياً.",
+ed_hint:"الحقول أعلاه تكفي للبدء، والبيانات الإضافية اختيارية.",ed_more:"بيانات إضافية (اختياري)",chat_hello:"أهلاً بكم. اختاروا سؤالاً سريعاً من الأسفل أو اكتبوا سؤالكم المالي."},
+en:{lang:"العربية",menu_profile:"Personal information",menu_settings:"Settings",menu_logout:"Sign out",
+org:"Organization",ind:"Individual",acc_default:"My account",no_email:"No email added",
+welcome_title:"Welcome to the Portfolio Monitoring Dashboard",welcome_desc:"A comprehensive, up-to-date analysis of your portfolio’s startup performance.",
+s1:"Companies in portfolio",s1s:"registered companies",s2:"High-risk companies",s2s:"Runway below the set threshold",s3:"Average remaining runway",s3s:"months",
+al_badge:"Financial Analysis Expert",al_title:"Early Warning and Strategic Recommendations",
+al_hi:"Financial alert: {n} is at a high-risk liquidity level",al_hi_d:"Remaining runway is {r} months at a monthly burn of {b} {c}, below the high-risk threshold ({t} months).",
+al_ok:"No companies at a high-risk level",al_ok_d:"All companies are above the set runway threshold ({t} months).",
+btn_plan:"View proposed mitigation plan",btn_contact:"Contact company management",
+chat_header:"Financial Analysis Assistant",chat_sub:"Ask about financial metrics and the performance of portfolio companies.",chat_ph:"Type your financial question here",btn_send:"Send",
+chat_hello:"Welcome. I am the financial analysis assistant. I can analyze runway, burn rates, and compare portfolio companies based on their recorded data.",
+chat_you:"You",chat_ai:"Financial Analyst",thinking:"Analyzing...",
+chip1:"Which companies are at highest risk?",chip2:"Compare runway across companies",chip3:"What should we prioritize this week?",
+err_na:"To enable the assistant, add your Anthropic API key in Settings.",err_rate:"Request limit reached for now. Please try again shortly.",err_gen:"The analysis could not be completed. Please try again.",
+table_header:"Connected startups",table_sub:"Data can be edited and companies added",btn_add:"Add company",
+th_company:"Startup",th_sector:"Sector",th_runway:"Remaining runway",th_status:"Financial assessment",th_action:"Action",
+sec_fintech:"Fintech",sec_edu:"Edtech",sec_ecom:"E-commerce",sec_health:"Healthtech",sec_other:"Other",
+st_high:"High risk",st_watch:"Under watch",st_stable:"Stable",mo:"mo",
+btn_recs:"Review recommendations",btn_edit:"Edit",
+recs_t:"Recommendations: {n}",plan_t:"Proposed mitigation plan: {n}",regen:"Re-run analysis",close:"Close",
+contact_t:"Contact company management",f_company:"Company",f_subject:"Subject",f_msg:"Message",f_draft:"Draft with AI",f_send:"Send by email",no_mail:"Add the company management email under Edit first.",
+subj_def:"Follow-up on financial position and runway",drafting:"Drafting...",
+co_edit:"Edit company data",co_new:"Add company",f_name_ar:"Arabic name",f_name_en:"English name",f_cash:"Cash balance",f_burn:"Monthly burn rate",f_email:"Company management email",
+save:"Save",cancel:"Cancel",del:"Delete company",del_q:"Remove this company from the portfolio?",saved:"Saved",deleted:"Deleted",need_name:"Enter the company name.",need_num:"Monthly burn must be greater than zero.",
+prof_t:"Personal information",f_type:"Account type",o_name:"Organization name",o_reg:"Commercial registration no.",o_rep:"Authorized representative",i_name:"Full name",i_id:"National ID",i_phone:"Mobile number",f_acc_email:"Email address",
+set_t:"Settings",f_lang:"Language",f_thr:"High-risk threshold (months)",f_thr_h:"A company is high risk when its runway is below this value, and under watch up to double it.",f_cur:"Currency",f_key:"Anthropic API key",f_key_h:"Stored in this browser only and sent to Anthropic alone. Do not leave it entered on a shared device.",err_auth:"The key is invalid. Check it in Settings.",f_notif:"Early-warning notifications",
+out_t:"Sign out",out_q:"Do you want to sign out?",out_btn:"Sign out",out_msg:"You have been signed out.",in_btn:"Sign in again",s2s:"Highest risk by assessment",s_cash:"Total available cash",s_net:"Monthly net burn",table_sub:"Click a column header to sort",
+th_burn:"Burn vs recurring revenue",th_cash:"Available cash",th_risk:"Assessment and risk score",th_data:"Data freshness",th_runway:"Remaining runway",
+mrr_cov:"Recurring covers {x}% of expenses",profit:"Profitable",f_all:"All",exp_csv:"Export CSV",exp_pdf:"Print / PDF",days_ago:"{x} d ago",stale:"Stale",
+btn_report:"Full report",btn_scn:"Simulate",btn_fr:"Round readiness",btn_ai:"AI analysis",
+al_none:"No active alerts.",al_off:"Alerts are turned off in Settings.",al_run:"Runway {r} months, below the alert level ({t} months)",al_rev:"Revenue fell {x}% versus the previous period",al_burn:"Net burn rose {x}% versus the previous period",al_liab:"Short-term liabilities exceed available cash",al_stale:"Data not updated for {d} days",
+rp_title:"Detailed financial report: {n}",src:"Data source",upd:"Last updated",src_acc:"Accounting system",src_bank:"Bank statements",src_mgmt:"Management reports",src_man:"Manual entry",
+sec_liq:"Liquidity and cash flows",sec_rev:"Revenue and profitability",sec_burn:"Burn vs recurring revenue",sec_be:"Break-even point",sec_scn:"Liquidity scenarios",sec_cmp:"Performance comparison",sec_risk:"Risk and compliance assessment",sec_ai:"AI analysis",
+m_cash:"Available cash",m_stl:"Short-term liabilities",m_cov:"Cash coverage of liabilities",m_run:"Remaining runway",m_cfo:"Monthly operating cash flow",m_cfi:"Monthly investing cash flow",m_cfn:"Net cash flow",
+m_rev:"Total revenue",m_mrr:"Recurring revenue",m_rec:"Recurring revenue share",m_gm:"Gross margin",m_opex:"Monthly expenses",m_net:"Net burn",m_mrrcov:"Recurring coverage of expenses",
+m_ber:"Required break-even revenue",m_gap:"Gap to current revenue",m_bem:"Months to break-even",
+be_ok:"The company is currently at break-even or operating profit.",be_never:"The company does not reach break-even at the entered growth rate.",be_fund:"Break-even comes after cash runs out, so additional funding is needed.",be_ok2:"Break-even is expected before cash runs out at the entered growth rate.",
+sc_opt:"Optimistic",sc_base:"Base",sc_con:"Conservative",sc_ass:"Growth {g}% monthly, sales {s}%, costs {c}%",sc_run:"Runway",sc_be:"Break-even",sc_c12:"Cash after 12 months",beyond:"Over 36 months",sc_note:"Scenarios are estimates based on company data and the growth assumptions entered, not certain forecasts.",
+scn_t:"Financial scenario simulation: {n}",scn_sales:"Sales change %",scn_cost:"Cost change %",scn_growth:"Monthly growth %",scn_now:"Before change",scn_after:"After change",scn_cash12:"Cash after 12 months",scn_vs:"Before change: {v}",
+c_metric:"Metric",c_cur:"Current",c_prev:"Previous",c_chg:"Change",c_peer:"Sector peers in portfolio",c_port:"Portfolio average",c_bench:"Sector benchmark",bench_h:"Enter the sector benchmark from your own source (for example an industry report); the platform does not include ready-made market data.",
+f_liq:"Liquidity",f_burn:"Burn trend",f_rev:"Revenue trend",f_liab:"Liabilities",f_gm:"Gross margin",f_rec:"Recurring revenue",f_data:"Data freshness",f_comp:"Compliance",
+r_liq:"Cash lasts only {r} months at the current burn rate",r_burn:"Net burn rose {x}% versus the previous period",r_rev:"Revenue changed {x}% versus the previous period",r_liab:"Short-term liabilities equal {x}% of available cash",r_gm:"Gross margin is low ({x}%)",r_rec:"Recurring revenue share is low ({x}%)",r_data:"Data not updated for {x} days",r_comp:"Compliance items completed: {x} of 5",
+rk_score:"Risk score",rk_factor:"Factor",rk_why:"Potential causes of distress",rk_none:"No notable risk factors.",rk_method:"The score is out of 100 (higher is riskier) and sums the eight factors above. A company is high risk at 55 or more, or when its runway falls below its own alert level.",
+cp_title:"Compliance checklist (updated by the user)",cp_reg:"Commercial registration valid",cp_audit:"Financial statements audited",cp_tax:"Tax filings up to date",cp_sha:"Shareholder agreements documented",cp_kyc:"KYC procedures completed",cp_note:"This checklist records what the user confirms. It is not legal advice and does not guarantee regulatory compliance. Consult a qualified legal advisor.",
+ed_fin:"Monthly financial data",ed_prev:"Previous period (for comparison)",ed_alert:"Alerts for this company (leave blank to use the default)",ed_comp:"Compliance",
+f_cur2:"Company currency",f_stl:"Short-term liabilities",f_rev_in:"Total revenue",f_mrr_in:"Recurring revenue",f_gm_in:"Gross margin %",f_opex:"Total expenses",f_cfo:"Operating cash flow",f_cfi:"Investing cash flow",f_growth:"Expected monthly growth %",
+f_prev_rev:"Previous period revenue",f_prev_opex:"Previous period expenses",f_prev_cash:"Previous period cash",f_a_run:"Alert when runway is below (months)",f_a_rev:"Alert when revenue falls by %",f_a_burn:"Alert when burn rises by %",f_src:"Data source",f_upd:"Last updated date",
+fr_t:"Funding round readiness: {n}",fr_type:"Round type",fr_target:"Target amount",fr_date:"Expected date",fr_gen:"Prepare file with AI",fr_copy:"Copy",copied:"Copied",fr_note:"The file is organized from the company data entered only, and missing items are flagged. The AI does not gather data from the internet.",
+f_thr:"Default runway alert level (months)",f_thr_h:"Applies to companies without their own level, which can be set per company when editing its data.",f_fx:"Exchange rates to base currency",f_fx_h:"Example: USD=3.75, EUR=4.1 . Entered manually; not live rates.",f_a_rev_d:"Default revenue decline alert %",f_a_burn_d:"Default burn increase alert %",f_cur:"Base currency",
+need_num:"Monthly expenses must be greater than zero.",
+q1:"What is the portfolio's burn rate?",a1:"The current average cash burn of the portfolio's startups is SAR 120,000 per month, with an average remaining runway of 5.7 months.",
+q2:"How is startup risk assessed?",a2:"The assessment analyzes available cash, short-term liabilities, and recurring revenue growth to identify high-risk companies and alert the investor early.",
+q3:"What is the expected break-even point?",a3:"The financial analysis shows the company needs sales of SAR 450,000 to cover all operating expenses and reach net profitability.",
+q4:"Can I try a financial scenario simulation?",a4:"Yes. You can try the Financial Scenario Planning feature from the dashboard to see the immediate effect of lower sales or higher costs on liquidity.",
+key_hint:"Quick questions are answered instantly. Free-form questions need an Anthropic API key.",key_add:"Add key",
+btn_details:"Details",table_sub:"Click a company to view details",
+sum_high:"The financial position needs attention: runway is only {r} months.",sum_med:"The company is under watch: runway is {r} months.",sum_low:"The position is stable: runway is {r} months.",sum_profit:"The company is currently operating at a profit.",
+ed_hint:"The fields above are enough to start; extra data is optional.",ed_more:"Additional data (optional)",chat_hello:"Welcome. Pick a quick question below or type your own financial question."}};
+const SECT=['sec_fintech','sec_edu','sec_ecom','sec_health','sec_other'];
+const TODAY=new Date().toISOString().slice(0,10);
+const mk=(id,ar,en,sector,o)=>Object.assign({id,ar,en,sector,cur:'SAR',src:'src_man',upd:TODAY,cash:0,stl:0,rev:0,mrr:0,gm:50,opex:0,cfo:0,cfi:0,growth:3,pRev:0,pOpex:0,pCash:0,aRun:'',aRev:'',aBurn:'',email:'',comp:{reg:1,audit:0,tax:1,sha:0,kyc:1},round:null},o);
+const DEF={settings:{lang:'ar',thr:3,cur:'SAR',fx:'USD=3.75, EUR=4.1, AED=1.02',aRev:10,aBurn:15,notif:true,apiKey:''},
+account:{type:'org',email:'',oName:'',oReg:'',oRep:'',iName:'',iId:'',phone:''},bench:{},
+companies:[
+mk('c1','شركة سهم للتقنية','Sahm Tech','sec_fintech',{cash:216000,stl:150000,rev:80000,mrr:60000,gm:55,opex:200000,cfo:-110000,cfi:-10000,growth:4,pRev:70000,pOpex:170000,pCash:336000,comp:{reg:1,audit:0,tax:1,sha:0,kyc:1}}),
+mk('c2','شركة سلة الخدمات','Sallah Services','sec_ecom',{cash:378000,stl:120000,rev:100000,mrr:30000,gm:30,opex:190000,cfo:-80000,cfi:-10000,growth:2,pRev:95000,pOpex:180000,pCash:468000,comp:{reg:1,audit:1,tax:1,sha:0,kyc:1}}),
+mk('c3','شركة لغتي للتعليم','Loghati Education','sec_edu',{cash:880000,stl:90000,rev:120000,mrr:100000,gm:72,opex:200000,cfo:-70000,cfi:-10000,growth:3,pRev:105000,pOpex:195000,pCash:960000,comp:{reg:1,audit:1,tax:1,sha:1,kyc:1}})]};
+let S;try{S=JSON.parse(localStorage.getItem('mv2_state'))}catch(e){}
+if(!S){let o;try{o=JSON.parse(localStorage.getItem('mv_state'))}catch(e){}
+ S=JSON.parse(JSON.stringify(DEF));if(o){if(o.account)S.account=o.account;if(o.settings)Object.assign(S.settings,{lang:o.settings.lang||'ar',apiKey:o.settings.apiKey||'',cur:o.settings.cur||'SAR',thr:o.settings.thr||3})}}
+else{S.settings=Object.assign(JSON.parse(JSON.stringify(DEF.settings)),S.settings);S.bench=S.bench||{}}
+function save(){try{localStorage.setItem('mv2_state',JSON.stringify(S))}catch(e){}}
+const t=(k,v)=>{let s=T[S.settings.lang][k]??k;for(const x in v)s=s.replace('{'+x+'}',v[x]);return s};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nm=c=>c[S.settings.lang]||c.ar||c.en;
+const runway=c=>{const r=M(c).run;return isFinite(r)?r:999};
+const fmt=n=>Number(n).toLocaleString(S.settings.lang==='ar'?'ar-SA-u-nu-latn':'en-US',{maximumFractionDigits:1});
+const status=c=>lvl(c);
+const ST={high:['bg-red-100 text-red-800','text-red-700','st_high'],med:['bg-amber-100 text-amber-800','text-amber-700','st_watch'],low:['bg-emerald-100 text-emerald-800','text-emerald-700','st_stable']};
+const accName=()=>S.account.type==='org'?S.account.oName:S.account.iName;
+
+function toast(m){const e=$('toast');e.textContent=m;e.classList.remove('hidden');clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.add('hidden'),2400)}
+function openModal(title,body,actions,wide){$('m-panel').className='bg-white rounded-2xl shadow-2xl w-full max-h-[92vh] flex flex-col '+(wide?'max-w-4xl':'max-w-lg');$('m-title').textContent=title;$('m-body').innerHTML=body;const f=$('m-foot');f.innerHTML='';
+ (actions||[]).forEach(a=>{const b=document.createElement('button');b.textContent=a.label;b.id=a.id||'';
+  b.className='text-xs px-4 py-2 rounded-lg font-bold transition '+(a.cls||'border border-slate-300 text-slate-700 hover:bg-slate-50');b.onclick=a.fn;f.appendChild(b)});
+ $('modal').classList.remove('hidden')}
+function closeModal(){$('modal').classList.add('hidden');ctl&&ctl.abort()}
+const P='bg-navy-900 hover:bg-navy-700 text-white';
+const inp='w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-navy-700';
+const fld=(id,l,v,type='text',extra='')=>`<label class="block mb-2 text-xs font-semibold text-slate-600">${esc(l)}<input id="${id}" type="${type}" value="${esc(v)}" ${extra} class="${inp} mt-1 font-normal"></label>`;
+
+/* ---------- AI ---------- */
+let ctl=null;
+const langName=()=>S.settings.lang==='ar'?'Arabic':'English';
+const brief=c=>{const m=M(c),r=risk(c);return{name:nm(c),sector:t(c.sector),currency:c.cur,cash:c.cash,shortTermLiabilities:c.stl,monthlyRevenue:c.rev,recurringRevenue:c.mrr,recurringPct:+m.rec.toFixed(1),grossMarginPct:c.gm,monthlyExpenses:c.opex,netBurn:m.net,operatingCF:c.cfo,investingCF:c.cfi,runwayMonths:isFinite(m.run)?+m.run.toFixed(1):'profitable',breakEvenRevenue:Math.round(m.be),monthsToBreakEven:isFinite(m.bem)?+m.bem.toFixed(1):'not reached',expectedMonthlyGrowthPct:c.growth,previousRevenue:c.pRev,previousExpenses:c.pOpex,previousCash:c.pCash,riskScore:r.score,riskLevel:lvl(c),complianceChecklist:c.comp,dataSource:t(c.src),lastUpdated:c.upd}};
+function portfolio(){return JSON.stringify(S.companies.map(brief))+` base currency=${S.settings.cur}; exchange rates=${S.settings.fx}`}
+const SYS=()=>`You are a senior financial analyst specialised in startup finance and venture portfolio monitoring (cash runway, burn rate, unit economics, fundraising, cost restructuring). Write in a formal, precise tone in ${langName()}, using clear simple language a non-specialist can follow. Start with the direct answer and keep it under 150 words unless the user asks for detail. Plain text only: no markdown symbols, no emojis; use short paragraphs or numbered lines. Ground every statement in the portfolio data below; if data is missing, say what is needed instead of inventing figures. Only discuss finance and the provided portfolio. Portfolio data: ${portfolio()}`;
+async function ask(prompt,onText,signal){
+ const key=S.settings.apiKey;if(!key)throw{code:'na'};
+ let r;try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal,headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+  body:JSON.stringify({model:'claude-sonnet-5-5',max_tokens:1200,stream:true,system:SYS(),messages:[{role:'user',content:prompt}]})})}
+ catch(e){if(e.name==='AbortError')throw e;throw{code:'net'}}
+ if(r.status===401||r.status===403)throw{code:'auth'};if(r.status===429)throw{code:'rate_limited'};if(!r.ok||!r.body)throw{code:'err'};
+ const rd=r.body.getReader(),dec=new TextDecoder();let buf='',x='';
+ for(;;){const o=await rd.read();if(o.done)break;buf+=dec.decode(o.value,{stream:true});const L=buf.split('\n');buf=L.pop();
+  for(const ln of L){if(!ln.startsWith('data:'))continue;const d=ln.slice(5).trim();if(!d)continue;let j;try{j=JSON.parse(d)}catch(e){continue}
+   if(j.type==='content_block_delta'&&j.delta&&j.delta.type==='text_delta'){x+=j.delta.text;onText(x)}
+   else if(j.type==='error')throw{code:j.error&&j.error.type==='rate_limit_error'?'rate_limited':'err'}}}
+ if(!x.trim())throw{code:'err'};return x.trim()}
+const errMsg=e=>e.code==='na'?t('err_na'):e.code==='auth'?t('err_auth'):e.code==='rate_limited'?t('err_rate'):t('err_gen');
+
+/* ---------- Render ---------- */
+/* ---------- v2 model ---------- */
+const fxMap=()=>{const o={};(S.settings.fx||'').split(/[\s,;]+/).forEach(p=>{const [k,v]=p.split('=');if(k&&+v>0)o[k.trim().toUpperCase()]=+v});return o};
+const rate=cur=>cur===S.settings.cur?1:(fxMap()[cur]||1);
+const curs=()=>[S.settings.cur,...Object.keys(fxMap())];
+const toBase=(v,c)=>v*rate(c.cur);
+const money=(v,cur)=>fmt(Math.round(v))+' '+cur;
+const daysOld=c=>Math.max(0,Math.floor((Date.now()-Date.parse(c.upd||TODAY))/864e5));
+const alertRun=c=>+c.aRun||S.settings.thr;
+function M(c){const net=c.opex-c.rev,gm=c.gm/100,fixed=c.opex-c.rev*(1-gm),be=gm>0?fixed/gm:Infinity,g=(c.growth||0)/100,pn=c.pOpex-c.pRev;
+ return{net,run:net>0?c.cash/net:Infinity,fixed,be,rec:c.rev?c.mrr/c.rev*100:0,mrrCov:c.opex?c.mrr/c.opex*100:0,
+ revCh:c.pRev?(c.rev/c.pRev-1)*100:0,netCh:pn>0?(net/pn-1)*100:0,cashCh:c.pCash?(c.cash/c.pCash-1)*100:0,cfn:c.cfo+c.cfi,
+ bem:c.rev>=be?0:(g>0&&c.rev>0?Math.log(be/c.rev)/Math.log(1+g):Infinity)}}
+function risk(c){const m=M(c),d=daysOld(c),dn=Object.values(c.comp||{}).filter(Boolean).length,r=m.run;
+ const F=[['f_liq',30,!isFinite(r)?0:r<=3?30:r<6?20:r<12?10:0,'r_liq',{r:fmt(r)}],
+ ['f_burn',15,m.netCh>25?15:m.netCh>10?10:m.netCh>0?5:0,'r_burn',{x:fmt(m.netCh)}],
+ ['f_rev',15,m.revCh<-10?15:m.revCh<0?10:m.revCh<5?5:0,'r_rev',{x:fmt(m.revCh)}],
+ ['f_liab',15,c.stl>c.cash?15:c.stl>c.cash/2?8:0,'r_liab',{x:c.cash?fmt(c.stl/c.cash*100):'—'}],
+ ['f_gm',10,c.gm<30?10:c.gm<50?5:0,'r_gm',{x:fmt(c.gm)}],
+ ['f_rec',5,m.rec<30?5:m.rec<60?2:0,'r_rec',{x:fmt(m.rec)}],
+ ['f_data',5,d>45?5:d>30?2:0,'r_data',{x:d}],
+ ['f_comp',5,Math.round(5*(1-dn/5)),'r_comp',{x:dn}]];
+ return{F,score:F.reduce((a,f)=>a+f[2],0)}}
+const lvl=c=>{const r=risk(c).score,a=alertRun(c),run=M(c).run;return r>=55||run<a?'high':r>=30||run<a*2?'med':'low'};
+function alertsOf(c){const m=M(c),a=[],ar=alertRun(c),d=daysOld(c);
+ if(m.run<ar)a.push({s:'high',k:'al_run',v:{r:fmt(m.run),t:ar}});
+ if(m.revCh<-(+c.aRev||S.settings.aRev))a.push({s:'med',k:'al_rev',v:{x:fmt(-m.revCh)}});
+ if(m.netCh>(+c.aBurn||S.settings.aBurn))a.push({s:'med',k:'al_burn',v:{x:fmt(m.netCh)}});
+ if(c.stl>c.cash)a.push({s:'high',k:'al_liab',v:{}});
+ if(d>45)a.push({s:'low',k:'al_stale',v:{d}});
+ return a}
+function sim(c,p){const m=M(c),gm=c.gm/100;let rev=c.rev*(1+p.shock/100),F=m.fixed*(1+p.cost/100),cash=c.cash,pts=[cash],out=null,be=null;
+ for(let i=1;i<=36;i++){const net=F-rev*gm,nc=cash-net;if(be===null&&net<=0)be=i;if(out===null&&nc<0)out=Math.max(0,i-1+(net>0?cash/net:0));cash=nc;pts.push(cash);rev*=1+p.g/100}
+ return{pts,out,be}}
+const SCN=c=>{const g=+c.growth||0;return[{k:'sc_opt',g:g+2,shock:5,cost:0,col:'#047857'},{k:'sc_base',g,shock:0,cost:0,col:'#1F5F7E'},{k:'sc_con',g:Math.max(g-2,-5),shock:-10,cost:5,col:'#B91C1C'}]};
+function chart(series){const W=520,H=150,all=series.flatMap(x=>x.pts.slice(0,25)),mx=Math.max(...all,1),mn=Math.min(...all,0),y=v=>H-8-(v-mn)/(mx-mn||1)*(H-16),x=i=>10+i*(W-20)/24;
+ return `<svg viewBox="0 0 ${W} ${H}" class="w-full border border-slate-200 rounded-lg bg-white" role="img"><line x1="10" x2="${W-10}" y1="${y(0)}" y2="${y(0)}" stroke="#94a3b8" stroke-dasharray="4"/>`+series.map(z=>`<polyline fill="none" stroke="${z.col}" stroke-width="2" points="${z.pts.slice(0,25).map((v,i)=>x(i).toFixed(1)+','+y(v).toFixed(1)).join(' ')}"/>`).join('')+'</svg>'}
+const legend=a=>'<div class="flex flex-wrap gap-3 text-[11px] text-slate-600 my-1">'+a.map(i=>`<span class="flex items-center gap-1"><span class="inline-block w-3" style="height:3px;background:${i[0]}"></span>${i[1]}</span>`).join('')+'</div>';
+const tile=(l,v,cls='text-navy-900',sub='')=>`<div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5"><div class="text-[11px] text-slate-500">${l}</div><div class="text-base font-bold ${cls}">${v}</div>${sub?`<div class="text-[11px] text-slate-500">${sub}</div>`:''}</div>`;
+const grid=(n,h)=>`<div class="grid grid-cols-2 md:grid-cols-${n} gap-2 mb-2">${h}</div>`;
+const sec=(k,h)=>`<details class="mt-2 border border-slate-200 rounded-lg"><summary class="cursor-pointer px-3 py-2 font-bold text-navy-900 text-sm">${t(k)}</summary><div class="px-3 pb-3">${h}</div></details>`;
+const pct=(v,good)=>`<span class="${(good?v>=0:v<=0)?'text-emerald-700':'text-red-700'}">${v>0?'+':''}${fmt(v)}%</span>`;
+const th2='py-1.5 px-2 text-start font-semibold text-slate-500',td2='py-1.5 px-2';
+
+function reportHTML(c){const m=M(c),B=c.cur,mo=v=>isFinite(v)?fmt(v)+' '+t('mo'):t('profit'),r=risk(c),l=lvl(c),s=ST[l],d=daysOld(c),pn=c.pOpex-c.pRev,bn=S.bench[c.sector]||{};
+ const sc=SCN(c).map(x=>({...x,r:sim(c,x)})),peers=S.companies.filter(x=>x.id!==c.id&&x.sector===c.sector);
+ const avg=(L,f)=>{const a=L.map(f).filter(v=>v!=null&&isFinite(v));return a.length?fmt(a.reduce((p,q)=>p+q,0)/a.length):'—'};
+ const chg=(a,b,good)=>b>0?pct((a/b-1)*100,good):'—';
+ const bev=c.rev>=m.be?t('be_ok'):!isFinite(m.bem)?t('be_never'):m.bem>m.run?t('be_fund'):t('be_ok2');
+ const bi=(k,v)=>`<input type="number" step="any" value="${v??''}" class="${inp} !py-1 w-24" onchange="this.setAttribute('value',this.value);setBench('${c.sector}','${k}',this.value)">`;
+ const ratio=[['m_run','run',x=>{const v=M(x).run;return isFinite(v)?v:null},m.run],['m_gm','gm',x=>x.gm,c.gm],['m_rec','rec',x=>M(x).rec,m.rec]];
+ const why=r.F.filter(f=>f[2]>0&&f[2]>=f[1]*0.4);
+ const cp=['reg','audit','tax','sha','kyc'].map(k=>`<label class="flex items-center gap-2 text-xs"><input type="checkbox" ${c.comp&&c.comp[k]?'checked':''} onchange="this.toggleAttribute('checked',this.checked);setComp('${c.id}','${k}',this.checked)"> ${t('cp_'+k)}</label>`).join('');
+ const sk=!isFinite(m.run)?'sum_profit':'sum_'+l,sumBox=`<div class="${s[0]} rounded-lg p-3 text-sm font-semibold mb-3">${esc(t(sk,{r:fmt(m.run)}))}</div>`+grid(4,tile(t('m_cash'),money(c.cash,B))+tile(t('m_run'),mo(m.run),s[1])+tile(t('m_net'),m.net>0?money(m.net,B):'—')+tile(t('m_ber'),isFinite(m.be)?money(m.be,B):'—'));
+ return `<div class="no-print flex flex-wrap gap-2 mb-3">${[['openScenario','btn_scn'],['openRound','btn_fr'],['aiReport','btn_ai'],['openCompany','btn_edit']].map(a=>`<button onclick="${a[0]}('${c.id}')" class="border border-slate-300 hover:bg-slate-50 text-xs px-3 py-1.5 rounded-lg font-semibold text-navy-700">${t(a[1])}</button>`).join('')}</div>
+ <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs mb-1"><span class="${s[0]} px-2 py-0.5 rounded font-semibold">${t(s[2])} · ${r.score}/100</span><span class="text-slate-600">${t(c.sector)} · ${B}</span><span class="text-slate-600">${t('src')}: ${t(c.src)}</span><span class="${d>45?'text-red-700 font-semibold':'text-slate-600'}">${t('upd')}: ${c.upd} (${t('days_ago',{x:d})})${d>45?' · '+t('stale'):''}</span></div>
+ ${sumBox}
+ ${sec('sec_liq',grid(4,tile(t('m_cash'),money(c.cash,B))+tile(t('m_stl'),money(c.stl,B))+tile(t('m_cov'),c.stl?fmt(c.cash/c.stl)+'x':'—',c.cash<c.stl?'text-red-700':'text-emerald-700')+tile(t('m_run'),mo(m.run),ST[l][1]))+grid(3,tile(t('m_cfo'),money(c.cfo,B),c.cfo<0?'text-red-700':'text-emerald-700')+tile(t('m_cfi'),money(c.cfi,B),c.cfi<0?'text-amber-700':'text-emerald-700')+tile(t('m_cfn'),money(m.cfn,B),m.cfn<0?'text-red-700':'text-emerald-700')))}
+ ${sec('sec_rev',grid(4,tile(t('m_rev'),money(c.rev,B))+tile(t('m_mrr'),money(c.mrr,B))+tile(t('m_rec'),fmt(m.rec)+'%')+tile(t('m_gm'),fmt(c.gm)+'%')))}
+ ${sec('sec_burn',grid(3,tile(t('m_opex'),money(c.opex,B))+tile(t('m_net'),money(Math.max(m.net,0),B),'text-red-700')+tile(t('m_mrrcov'),fmt(m.mrrCov)+'%'))+`<div class="h-2 bg-slate-200 rounded"><div class="h-2 rounded bg-teal-brand" style="width:${Math.min(100,m.mrrCov)}%"></div></div>`)}
+ ${sec('sec_be',grid(4,tile(t('m_ber'),isFinite(m.be)?money(m.be,B):'—')+tile(t('m_rev'),money(c.rev,B))+tile(t('m_gap'),isFinite(m.be)?money(Math.max(0,m.be-c.rev),B):'—')+tile(t('m_bem'),isFinite(m.bem)?fmt(m.bem)+' '+t('mo'):'—'))+`<p class="text-xs text-slate-700 mb-1">${bev}</p>`)}
+ ${sec('sec_scn',`<div class="overflow-x-auto"><table class="w-full text-xs"><tr class="bg-slate-50"><th class="${th2}"></th><th class="${th2}">${t('sc_ass',{g:'',s:'',c:''}).split(' ')[0]}</th><th class="${th2}">${t('sc_run')}</th><th class="${th2}">${t('sc_be')}</th><th class="${th2}">${t('sc_c12')}</th></tr>`+sc.map(x=>`<tr class="border-t border-slate-100"><td class="${td2} font-bold" style="color:${x.col}">${t(x.k)}</td><td class="${td2} text-slate-600">${t('sc_ass',{g:fmt(x.g),s:(x.shock>0?'+':'')+x.shock,c:(x.cost>0?'+':'')+x.cost})}</td><td class="${td2} font-semibold">${x.r.out==null?t('beyond'):fmt(x.r.out)+' '+t('mo')}</td><td class="${td2}">${x.r.be?fmt(x.r.be)+' '+t('mo'):'—'}</td><td class="${td2} ${x.r.pts[12]<0?'text-red-700':''}">${money(x.r.pts[12],B)}</td></tr>`).join('')+`</table></div>`+legend(sc.map(x=>[x.col,t(x.k)]))+chart(sc.map(x=>({pts:x.r.pts,col:x.col})))+`<p class="text-[11px] text-slate-500 mt-1">${t('sc_note')}</p>`)}
+ ${sec('sec_cmp',`<div class="overflow-x-auto"><table class="w-full text-xs"><tr class="bg-slate-50"><th class="${th2}">${t('c_metric')}</th><th class="${th2}">${t('c_cur')}</th><th class="${th2}">${t('c_prev')}</th><th class="${th2}">${t('c_chg')}</th></tr>`+
+ [['m_rev',c.rev,c.pRev,true],['m_opex',c.opex,c.pOpex,false],['m_net',m.net,pn,false],['m_cash',c.cash,c.pCash,true]].map(x=>`<tr class="border-t border-slate-100"><td class="${td2}">${t(x[0])}</td><td class="${td2} font-semibold">${money(x[1],B)}</td><td class="${td2}">${money(x[2],B)}</td><td class="${td2}">${chg(x[1],x[2],x[3])}</td></tr>`).join('')+`</table></div>
+ <div class="overflow-x-auto mt-3"><table class="w-full text-xs"><tr class="bg-slate-50"><th class="${th2}">${t('c_metric')}</th><th class="${th2}">${t('c_cur')}</th><th class="${th2}">${t('c_peer')}</th><th class="${th2}">${t('c_port')}</th><th class="${th2}">${t('c_bench')}</th></tr>`+
+ ratio.map(x=>`<tr class="border-t border-slate-100"><td class="${td2}">${t(x[0])}</td><td class="${td2} font-semibold">${isFinite(x[3])?fmt(x[3]):'—'}</td><td class="${td2}">${avg(peers,x[2])}</td><td class="${td2}">${avg(S.companies,x[2])}</td><td class="${td2}">${bi(x[1],bn[x[1]])}</td></tr>`).join('')+`</table></div><p class="text-[11px] text-slate-500 mt-1">${t('bench_h')}</p>`)}
+ ${sec('sec_risk',`<div class="overflow-x-auto"><table class="w-full text-xs"><tr class="bg-slate-50"><th class="${th2}">${t('rk_factor')}</th><th class="${th2} w-1/2">${t('rk_score')}: ${r.score}/100</th></tr>`+r.F.map(f=>`<tr class="border-t border-slate-100"><td class="${td2}">${t(f[0])}</td><td class="${td2}"><div class="flex items-center gap-2"><div class="flex-1 h-1.5 bg-slate-200 rounded"><div class="h-1.5 rounded ${f[2]>=f[1]*.6?'bg-red-500':f[2]>0?'bg-amber-400':'bg-emerald-500'}" style="width:${f[2]/f[1]*100}%"></div></div><span class="w-10 text-slate-600">${f[2]}/${f[1]}</span></div></td></tr>`).join('')+`</table></div>
+ <p class="text-[11px] text-slate-500 mt-1 mb-2">${t('rk_method')}</p><div class="font-semibold text-xs text-navy-900 mb-1">${t('rk_why')}</div>${why.length?'<ul class="list-disc ms-5 text-xs text-slate-700 space-y-0.5">'+why.map(f=>`<li>${esc(t(f[3],f[4]))}</li>`).join('')+'</ul>':`<p class="text-xs text-slate-600">${t('rk_none')}</p>`}
+ <div class="font-semibold text-xs text-navy-900 mt-3 mb-1">${t('cp_title')}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-1">${cp}</div><p class="text-[11px] text-slate-500 mt-1">${t('cp_note')}</p>`)}
+ ${c.round&&c.round.brief?sec('btn_fr',`<div class="text-xs text-slate-600 mb-1">${esc(c.round.type)} · ${c.round.target?money(c.round.target,B):'—'} · ${esc(c.round.date||'—')}</div><div class="whitespace-pre-wrap text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-3">${esc(c.round.brief)}</div>`):''}
+ ${sec('sec_ai','<div id="ai-out" class="whitespace-pre-wrap text-xs leading-relaxed text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-3 min-h-[2.5rem]"></div>')}`}
+function setBench(sec_,k,v){S.bench[sec_]=S.bench[sec_]||{};S.bench[sec_][k]=v===''?null:+v;save()}
+function setComp(id,k,v){const c=S.companies.find(x=>x.id===id);c.comp=c.comp||{};c.comp[k]=v?1:0;save();render()}
+function openReport(id){const c=S.companies.find(x=>x.id===id);if(!c)return;
+ openModal(t('rp_title',{n:nm(c)}),reportHTML(c),[{label:t('exp_csv'),fn:()=>exportCSV(id)},{label:t('exp_pdf'),fn:printReport},{label:t('close'),cls:P,fn:closeModal}],true)}
+async function aiReport(id){const c=S.companies.find(x=>x.id===id),el=$('ai-out');if(!el)return;el.closest('details').open=true;el.textContent=t('thinking');ctl&&ctl.abort();ctl=new AbortController();
+ try{el.textContent=await ask('Company data: '+JSON.stringify(brief(c))+'. Write a detailed financial analysis for an investor with these numbered sections: 1) financial position and liquidity, 2) cash flow quality (operating vs investing), 3) revenue quality and unit economics, 4) burn versus recurring revenue and break-even outlook, 5) key risks and likely causes of failure, 6) data gaps to verify before an investment decision. Use only the data given. State that this is analytical support and not investment or legal advice.',x=>{el.textContent=x},ctl.signal)}catch(e){if(e.name!=='AbortError')el.textContent=errMsg(e)}}
+function printReport(){$('print-root').innerHTML=`<h1 style="font-size:18px;font-weight:bold;margin-bottom:8px">Mindvest · ${esc($('m-title').textContent)}</h1>`+$('m-body').innerHTML.replace(/<details/g,'<details open');window.print()}
+function printAll(){const tb=$('thead').parentElement.outerHTML;$('print-root').innerHTML=`<h1 style="font-size:18px;font-weight:bold;margin-bottom:8px">Mindvest · ${t('table_header')} · ${TODAY}</h1>`+$('stats').outerHTML+tb;window.print()}
+function exportCSV(id){const L=id?S.companies.filter(c=>c.id===id):S.companies;
+ const H=['name','sector','currency','cash','short_term_liabilities','revenue','recurring_revenue','recurring_pct','gross_margin_pct','monthly_expenses','net_burn','operating_cf','investing_cf','runway_months','breakeven_revenue','risk_score','risk_level','data_source','last_updated'];
+ const R=L.map(c=>{const m=M(c);return[nm(c),t(c.sector),c.cur,c.cash,c.stl,c.rev,c.mrr,m.rec.toFixed(1),c.gm,c.opex,m.net,c.cfo,c.cfi,isFinite(m.run)?m.run.toFixed(1):'profitable',Math.round(m.be),risk(c).score,lvl(c),t(c.src),c.upd]});
+ const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+ const blob=new Blob(['\ufeff'+[H,...R].map(r=>r.map(q).join(',')).join('\n')],{type:'text/csv;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mindvest-'+(id||'portfolio')+'-'+TODAY+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+function openScenario(id){const c=S.companies.find(x=>x.id===id),B=c.cur;
+ openModal(t('scn_t',{n:nm(c)}),`<div class="grid grid-cols-3 gap-x-2">${fld('sc-s',t('scn_sales'),-20,'number','step="any"')}${fld('sc-c',t('scn_cost'),0,'number','step="any"')}${fld('sc-g',t('scn_growth'),c.growth,'number','step="any"')}</div><div id="sc-out"></div>`,[{label:t('close'),cls:P,fn:closeModal}],true);
+ const up=()=>{const x=sim(c,{shock:+$('sc-s').value||0,cost:+$('sc-c').value||0,g:+$('sc-g').value||0}),b=sim(c,{shock:0,cost:0,g:+c.growth||0}),rs=o=>o.out==null?t('beyond'):fmt(o.out)+' '+t('mo'),worse=x.out!=null&&(b.out==null||x.out<b.out);
+  $('sc-out').innerHTML=grid(4,tile(t('scn_now'),rs(b),'text-navy-700')+tile(t('scn_after'),rs(x),worse?'text-red-700':'text-emerald-700')+tile(t('scn_cash12'),money(x.pts[12],B),x.pts[12]<0?'text-red-700':'text-navy-900',t('scn_vs',{v:money(b.pts[12],B)}))+tile(t('sc_be'),x.be?fmt(x.be)+' '+t('mo'):'—'))+legend([['#1F5F7E',t('scn_now')],['#DC2626',t('scn_after')]])+chart([{pts:b.pts,col:'#1F5F7E'},{pts:x.pts,col:'#DC2626'}])+`<p class="text-[11px] text-slate-500 mt-2">${t('sc_note')}</p>`};
+ ['sc-s','sc-c','sc-g'].forEach(i=>$(i).oninput=up);up()}
+function openRound(id){const c=S.companies.find(x=>x.id===id),r=c.round||{type:'Seed',target:'',date:'',brief:''};
+ openModal(t('fr_t',{n:nm(c)}),`<div class="grid grid-cols-3 gap-x-2"><label class="block mb-2 text-xs font-semibold text-slate-600">${t('fr_type')}<select id="fr-ty" class="${inp} mt-1 font-normal">${['Pre-seed','Seed','Series A','Series B'].map(x=>`<option ${x===r.type?'selected':''}>${x}</option>`).join('')}</select></label>${fld('fr-tg',t('fr_target')+' ('+c.cur+')',r.target,'number','step="any"')}${fld('fr-dt',t('fr_date'),r.date,'date')}</div><p class="text-[11px] text-slate-500 mb-2">${t('fr_note')}</p><div id="fr-out" class="whitespace-pre-wrap text-xs leading-relaxed text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-3 min-h-[6rem]">${esc(r.brief||'')}</div>`,
+ [{label:t('fr_copy'),fn:()=>{try{navigator.clipboard.writeText($('fr-out').textContent).then(()=>toast(t('copied')))}catch(e){}}},{label:t('fr_gen'),cls:P,fn:gen}],true);
+ async function gen(){const o=$('fr-out'),v={type:$('fr-ty').value,target:+$('fr-tg').value||'',date:$('fr-dt').value};o.textContent=t('thinking');ctl&&ctl.abort();ctl=new AbortController();
+  try{const x=await ask('Company data: '+JSON.stringify(brief(c))+`. Planned round: ${v.type}, target ${v.target||'not set'} ${c.cur}, expected date ${v.date||'not set'}. Prepare an investor-ready file with these sections: company snapshot, key metrics, funding need and suggested use of funds, key risks and mitigations, a data room checklist split into "available" and "missing" items (use the complianceChecklist and the data provided), and the questions investors are likely to ask. Use only the data given; mark anything absent as missing instead of inventing it.`,y=>{o.textContent=y},ctl.signal);
+   o.textContent=x;c.round={...v,brief:x};save()}catch(e){if(e.name!=='AbortError')o.textContent=errMsg(e)}}}
+
+/* ---------- render ---------- */
+let sortK='risk',flt='all';
+function render(){
+ const L=S.settings.lang,root=$('html-root');root.lang=L;root.dir=L==='ar'?'rtl':'ltr';$('body-tag').className=L+' bg-slate-50 text-slate-800';
+ $('lang-btn').textContent=t('lang');
+ document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));
+ $('chat-in').placeholder=t('chat_ph');
+ $('m-name').textContent=accName()||t('acc_default');$('m-email').textContent=S.account.email||t('no_email');$('m-type').textContent=t(S.account.type);
+ const C=S.companies,B=S.settings.cur,hi=C.filter(c=>lvl(c)==='high'),cash=C.reduce((a,c)=>a+toBase(c.cash,c),0),net=C.reduce((a,c)=>a+Math.max(0,toBase(M(c).net,c)),0);
+ const card=(b,l,v,vc,s)=>`<div class="bg-white p-4 rounded-xl border border-slate-200 border-t-4 ${b} shadow-sm"><p class="text-xs text-slate-500 font-medium">${l}</p><h3 class="text-2xl font-bold ${vc} mt-1">${v}</h3><span class="text-xs ${vc} inline-block font-semibold">${s}</span></div>`;
+ $('stats').innerHTML=(()=>{const f=C.map(c=>M(c).run).filter(isFinite),a=f.length?f.reduce((p,q)=>p+q,0)/f.length:0;return card('border-t-teal-brand',t('s1'),C.length,'text-navy-900',t('s1s'))+card(hi.length?'border-t-red-600':'border-t-emerald-500',t('s2'),hi.length,hi.length?'text-red-700':'text-emerald-700',t('s2s'))+card('border-t-navy-700',t('s3'),fmt(a),'text-navy-700',t('s3s'))})();
+ const ord={high:0,med:1,low:2},al=C.flatMap(c=>alertsOf(c).map(a=>({c,...a}))).sort((x,y)=>ord[x.s]-ord[y.s]),dot={high:'bg-red-500',med:'bg-amber-400',low:'bg-slate-400'};
+ const bt='text-xs px-3 py-1.5 rounded-lg transition ';
+ $('alert').innerHTML=`<div class="bg-navy-900 rounded-2xl p-4 text-white shadow-lg border border-navy-800 border-s-4 ${hi.length?'border-s-red-500':'border-s-teal-brand'}"><div class="flex flex-wrap items-center gap-3 mb-3"><span class="bg-teal-brand text-navy-950 text-xs px-3 py-1 rounded-md font-bold">${t('al_badge')}</span><h2 class="text-base font-bold">${t('al_title')}</h2></div><div class="space-y-2">`+
+ (!S.settings.notif?`<p class="text-xs text-slate-300">${t('al_off')}</p>`:al.length?al.slice(0,3).map(a=>`<div class="bg-navy-800/70 rounded-lg p-3 border border-teal-brand/20 flex flex-wrap items-center justify-between gap-2"><div class="flex items-start gap-2 min-w-0"><span class="mt-1.5 w-2 h-2 rounded-full ${dot[a.s]} shrink-0"></span><div><div class="text-sm font-bold text-teal-soft">${esc(nm(a.c))}</div><div class="text-xs text-slate-200">${esc(t(a.k,a.v))}</div></div></div><div class="flex gap-2"><button onclick="openPlan('${a.c.id}')" class="${bt}bg-teal-brand hover:bg-teal-soft text-navy-950 font-bold">${t('btn_plan')}</button><button onclick="openContact('${a.c.id}')" class="${bt}border border-teal-brand hover:bg-white/10">${t('btn_contact')}</button></div></div>`).join(''):`<p class="text-xs text-teal-soft">${t('al_none')}</p>`)+`</div></div>`;
+ const rows=C.slice().sort((a,b)=>risk(b).score-risk(a).score),thc='py-2 px-3 text-start font-semibold';
+ $('thead').innerHTML=`<tr class="bg-slate-50 text-slate-500 text-xs border-b border-slate-200"><th class="${thc}">${t('th_company')}</th><th class="${thc}">${t('th_runway')}</th><th class="${thc}">${t('th_status')}</th><th class="${thc} act"></th></tr>`;
+ $('rows').innerHTML=rows.map(c=>{const m=M(c),s=ST[lvl(c)];return `<tr class="hover:bg-slate-50 cursor-pointer" onclick="openReport('${c.id}')"><td class="py-3 px-3"><div class="font-semibold text-navy-900">${esc(nm(c))}</div><div class="text-slate-500">${t(c.sector)}</div></td><td class="py-3 px-3 font-bold ${s[1]} whitespace-nowrap">${isFinite(m.run)?fmt(m.run)+' '+t('mo'):t('profit')}</td><td class="py-3 px-3"><span class="${s[0]} px-2 py-0.5 rounded font-semibold whitespace-nowrap">${t(s[2])}</span></td><td class="py-3 px-3 act"><button class="bg-navy-900 hover:bg-navy-700 text-white px-3 py-1.5 rounded-lg font-bold" onclick="event.stopPropagation();openReport('${c.id}')">${t('btn_details')}</button></td></tr>`}).join('');
+ $('chips').innerHTML=[1,2,3,4].map(i=>`<button onclick="preset(${i})" class="text-[11px] border border-slate-300 hover:border-navy-700 hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-full text-start">${t('q'+i)}</button>`).join('');
+ $('key-hint').innerHTML=S.settings.apiKey?'':`${t('key_hint')} <button onclick="openSettings()" class="text-navy-700 underline font-semibold">${t('key_add')}</button>`;
+ const log=$('chat-log');if(!log.children.length)addMsg('ai',t('chat_hello'),true);
+ log.querySelectorAll('[data-who]').forEach(d=>d.children[0].textContent=d.dataset.who==='ai'?t('chat_ai'):t('chat_you'));
+ const h=log.querySelector('[data-hello]');if(h)h.children[1].textContent=t('chat_hello');
+}
+function setLang(l){S.settings.lang=l;save();render();if(!$('modal').classList.contains('hidden'))closeModal()}
+
+/* ---------- Chat ---------- */
+let hist=[];
+function addMsg(who,text,hello){const ai=who==='ai',d=document.createElement('div');d.dataset.who=who;if(hello)d.dataset.hello=1;
+ d.className='flex items-start gap-2'+(ai?'':' flex-row-reverse');
+ d.innerHTML=`<div class="${ai?'bg-navy-900 text-white':'bg-teal-brand text-navy-950'} px-2 py-1 rounded font-bold whitespace-nowrap"></div><div class="bg-white p-3 rounded-lg border border-slate-200 text-slate-700 whitespace-pre-wrap max-w-[85%]"></div>`;
+ d.children[0].textContent=ai?t('chat_ai'):t('chat_you');d.children[1].textContent=text;$('chat-log').appendChild(d);$('chat-log').scrollTop=1e9;return d.children[1]}
+async function sendChat(q){
+ const inp=$('chat-in');q=(typeof q==='string'?q:inp.value).trim();if(!q||$('send-btn').disabled)return;
+ inp.value='';addMsg('user',q);const out=addMsg('ai',t('thinking'));$('send-btn').disabled=true;
+ const transcript=hist.slice(-8).map(m=>(m.r==='u'?'User: ':'Analyst: ')+m.x).join('\n');
+ try{const r=await ask((transcript?'Conversation so far:\n'+transcript+'\n\n':'')+'User question: '+q+'\n\nAnswer the question as the analyst.',x=>{out.textContent=x;$('chat-log').scrollTop=1e9});
+  out.textContent=r;hist.push({r:'u',x:q},{r:'a',x:r})}catch(e){out.textContent=errMsg(e)}
+ $('send-btn').disabled=false}
+
+function preset(i){addMsg('user',t('q'+i));addMsg('ai',t('a'+i))}
+/* ---------- Recommendations / plan ---------- */
+function analysis(titleKey,id,instr){
+ const c=S.companies.find(x=>x.id===id);if(!c)return;
+ openModal(t(titleKey,{n:nm(c)}),`<div id="an" class="whitespace-pre-wrap leading-relaxed text-slate-700"></div>`,[{label:t('regen'),fn:()=>run()},{label:t('close'),cls:P,fn:closeModal}]);
+ async function run(){ctl&&ctl.abort();ctl=new AbortController();const el=$('an');el.textContent=t('thinking');
+  const d='Company data: '+JSON.stringify(brief(c))+'.';
+  try{el.textContent=await ask(d+'\n'+instr,x=>{el.textContent=x},ctl.signal)}catch(e){if(e.name!=='AbortError')el.textContent=errMsg(e)}}
+ run()}
+const openRecs=id=>analysis('recs_t',id,'Give 4 to 5 prioritized, specific recommendations for this company based on its figures, each with a one-line rationale.');
+const openPlan=id=>analysis('plan_t',id,'Write a staged mitigation plan: immediate actions (0 to 30 days), short term (30 to 90 days), and a financing or restructuring path. Quantify targets (for example the burn reduction needed to reach a 6-month runway) from the figures given.');
+
+/* ---------- Contact ---------- */
+function openContact(id){
+ const opts=S.companies.map(c=>`<option value="${c.id}" ${c.id===id?'selected':''}>${esc(nm(c))}</option>`).join('');
+ openModal(t('contact_t'),`<label class="block mb-3 text-xs font-semibold text-slate-600">${t('f_company')}<select id="k-co" class="${inp} mt-1 font-normal">${opts}</select></label>${fld('k-sub',t('f_subject'),t('subj_def'))}
+ <label class="block text-xs font-semibold text-slate-600">${t('f_msg')}<textarea id="k-msg" rows="7" class="${inp} mt-1 font-normal"></textarea></label>`,
+ [{label:t('f_draft'),fn:draft},{label:t('f_send'),cls:P,fn:send}]);
+ async function draft(){const c=S.companies.find(x=>x.id===$('k-co').value),m=$('k-msg');m.value=t('drafting');ctl&&ctl.abort();ctl=new AbortController();
+  try{m.value=await ask(`Draft a formal message from the fund to the management of ${nm(c)} (cash ${c.cash}, net monthly burn ${Math.round(M(c).net)}, runway ${runway(c).toFixed(1)} months) requesting a call and an updated cash forecast. Subject: ${$('k-sub').value}. Output only the message body.`,x=>{m.value=x},ctl.signal)}catch(e){m.value=e.name==='AbortError'?'':errMsg(e)}}
+ function send(){const c=S.companies.find(x=>x.id===$('k-co').value);if(!c.email){toast(t('no_mail'));return}
+  location.href='mailto:'+encodeURIComponent(c.email)+'?subject='+encodeURIComponent($('k-sub').value)+'&body='+encodeURIComponent($('k-msg').value)}}
+
+/* ---------- Company edit ---------- */
+function openCompany(id){
+ const c=S.companies.find(x=>x.id===id)||mk('','','','sec_other',{cur:S.settings.cur,opex:'',cash:'',gm:50,comp:{}});
+ const so=SECT.map(k=>`<option value="${k}" ${k===c.sector?'selected':''}>${t(k)}</option>`).join(''),co=curs().map(k=>`<option ${k===c.cur?'selected':''}>${k}</option>`).join(''),sr=['src_acc','src_bank','src_mgmt','src_man'].map(k=>`<option value="${k}" ${k===c.src?'selected':''}>${t(k)}</option>`).join('');
+ const sel=(i,l,o)=>`<label class="block mb-2 text-xs font-semibold text-slate-600">${l}<select id="${i}" class="${inp} mt-1 font-normal">${o}</select></label>`;
+ const nf=(k,l)=>fld('e-'+k,t(l),c[k],'number','step="any"'),g3=h=>`<div class="grid grid-cols-2 md:grid-cols-3 gap-x-3">${h}</div>`,hh=k=>`<div class="font-bold text-navy-900 text-xs mt-2 mb-1 border-b border-slate-200 pb-1">${t(k)}</div>`;
+ const cp=['reg','audit','tax','sha','kyc'].map(k=>`<label class="flex items-center gap-2 text-xs"><input id="e-cp-${k}" type="checkbox" ${c.comp&&c.comp[k]?'checked':''}> ${t('cp_'+k)}</label>`).join('');
+ const acts=[{label:t('cancel'),fn:closeModal},{label:t('save'),cls:P,fn:save1}];
+ if(id)acts.unshift({label:t('del'),cls:'border border-red-300 text-red-700 hover:bg-red-50 me-auto',fn:()=>{if(confirm(t('del_q'))){S.companies=S.companies.filter(x=>x.id!==id);save();render();closeModal();toast(t('deleted'))}}});
+ openModal(id?t('co_edit'):t('co_new'),g3(fld('e-ar',t('f_name_ar'),c.ar)+fld('e-en',t('f_name_en'),c.en)+sel('e-sec',t('th_sector'),so))+g3(nf('cash','f_cash')+nf('rev','f_rev_in')+nf('opex','f_opex'))+`<p class="text-[11px] text-slate-500 mb-2">${t('ed_hint')}</p><details class="border border-slate-200 rounded-lg"><summary class="cursor-pointer px-3 py-2 text-xs font-bold text-navy-900">${t('ed_more')}</summary><div class="px-3 pb-3">`+
+ g3(sel('e-cur',t('f_cur2'),co)+sel('e-src',t('f_src'),sr)+fld('e-upd',t('f_upd'),c.upd,'date'))+hh('ed_fin')+g3(nf('stl','f_stl')+nf('mrr','f_mrr_in')+nf('gm','f_gm_in')+nf('cfo','f_cfo')+nf('cfi','f_cfi')+nf('growth','f_growth'))+
+ hh('ed_prev')+g3(nf('pRev','f_prev_rev')+nf('pOpex','f_prev_opex')+nf('pCash','f_prev_cash'))+hh('ed_alert')+g3(nf('aRun','f_a_run')+nf('aRev','f_a_rev')+nf('aBurn','f_a_burn'))+
+ hh('ed_comp')+`<div class="grid grid-cols-1 md:grid-cols-2 gap-1 mb-2">${cp}</div>`+fld('e-mail',t('f_email'),c.email,'email')+`</div></details>`,acts,true);
+ function save1(){const ar=$('e-ar').value.trim(),en=$('e-en').value.trim(),v=k=>+$('e-'+k).value||0,bl=k=>$('e-'+k).value===''?'':+$('e-'+k).value;
+  if(!ar&&!en){toast(t('need_name'));return}if(!(v('opex')>0)){toast(t('need_num'));return}
+  const comp={};['reg','audit','tax','sha','kyc'].forEach(k=>comp[k]=$('e-cp-'+k).checked?1:0);
+  const o={...c,id:id||'c'+Date.now(),ar:ar||en,en:en||ar,sector:$('e-sec').value,cur:$('e-cur').value,src:$('e-src').value,upd:$('e-upd').value||TODAY,cash:v('cash'),stl:v('stl'),rev:v('rev'),mrr:v('mrr'),gm:v('gm'),opex:v('opex'),cfo:v('cfo'),cfi:v('cfi'),growth:v('growth'),pRev:v('pRev'),pOpex:v('pOpex'),pCash:v('pCash'),aRun:bl('aRun'),aRev:bl('aRev'),aBurn:bl('aBurn'),email:$('e-mail').value.trim(),comp};
+  if(id)S.companies=S.companies.map(x=>x.id===id?o:x);else S.companies.push(o);
+  save();render();closeModal();toast(t('saved'))}}
+
+/* ---------- Profile / settings / logout ---------- */
+function openProfile(){closeMenu();const a=S.account;
+ const body=()=>`<div class="mb-4 text-xs font-semibold text-slate-600">${t('f_type')}<div class="flex gap-2 mt-1">${['org','ind'].map(k=>`<button data-ty="${k}" class="flex-1 py-2 rounded-lg border font-semibold ${a.type===k?'bg-navy-900 text-white border-navy-900':'bg-white text-slate-600 border-slate-300'}">${t(k)}</button>`).join('')}</div></div>`+
+  (a.type==='org'?fld('p-a',t('o_name'),a.oName)+fld('p-b',t('o_reg'),a.oReg)+fld('p-c',t('o_rep'),a.oRep):fld('p-a',t('i_name'),a.iName)+fld('p-b',t('i_id'),a.iId)+fld('p-c',t('i_phone'),a.phone,'tel'))+fld('p-e',t('f_acc_email'),a.email,'email');
+ const keep=()=>{if(!$('p-a'))return;const o=a.type==='org';a[o?'oName':'iName']=$('p-a').value.trim();a[o?'oReg':'iId']=$('p-b').value.trim();a[o?'oRep':'phone']=$('p-c').value.trim();a.email=$('p-e').value.trim()};
+ const draw=()=>{$('m-body').innerHTML=body();$('m-body').querySelectorAll('[data-ty]').forEach(b=>b.onclick=()=>{keep();a.type=b.dataset.ty;draw()})};
+ openModal(t('prof_t'),'',[{label:t('cancel'),fn:()=>{S.account=JSON.parse(localStorage.getItem('mv_state')||'null')?.account||DEF.account;closeModal()}},{label:t('save'),cls:P,fn:()=>{keep();save();render();closeModal();toast(t('saved'))}}]);draw()}
+function openSettings(){closeMenu();const s=S.settings,note=k=>`<p class="text-[11px] text-slate-500 -mt-1 mb-2">${t(k)}</p>`;
+ openModal(t('set_t'),`<label class="block mb-2 text-xs font-semibold text-slate-600">${t('f_lang')}<select id="s-l" class="${inp} mt-1 font-normal"><option value="ar" ${s.lang==='ar'?'selected':''}>العربية</option><option value="en" ${s.lang==='en'?'selected':''}>English</option></select></label>`+
+ fld('s-k',t('f_key'),s.apiKey||'','password','autocomplete="off" dir="ltr" placeholder="sk-ant-..."')+note('f_key_h')+
+ `<details class="border border-slate-200 rounded-lg"><summary class="cursor-pointer px-3 py-2 text-xs font-bold text-navy-900">${t('ed_more')}</summary><div class="px-3 pb-3 pt-2">`+fld('s-c',t('f_cur'),s.cur)+fld('s-fx',t('f_fx'),s.fx,'text','dir="ltr"')+note('f_fx_h')+
+ `<div class="grid grid-cols-3 gap-x-3">${fld('s-t',t('f_thr'),s.thr,'number','min="1"')}${fld('s-r',t('f_a_rev_d'),s.aRev,'number')}${fld('s-b',t('f_a_burn_d'),s.aBurn,'number')}</div>`+note('f_thr_h')+
+ `<label class="flex items-center gap-2 text-xs font-semibold text-slate-600"><input id="s-n" type="checkbox" ${s.notif?'checked':''}> ${t('f_notif')}</label></div></details>`,
+ [{label:t('cancel'),fn:closeModal},{label:t('save'),cls:P,fn:()=>{s.lang=$('s-l').value;s.cur=($('s-c').value.trim()||'SAR').toUpperCase();s.fx=$('s-fx').value.trim();s.thr=Math.max(1,+$('s-t').value||3);s.aRev=Math.max(1,+$('s-r').value||10);s.aBurn=Math.max(1,+$('s-b').value||15);s.apiKey=$('s-k').value.trim();s.notif=$('s-n').checked;save();render();closeModal();toast(t('saved'))}}])}
+function confirmLogout(){closeMenu();openModal(t('out_t'),`<p>${t('out_q')}</p>`,[{label:t('cancel'),fn:closeModal},{label:t('out_btn'),cls:'bg-red-700 hover:bg-red-800 text-white',fn:()=>{closeModal();hist=[];$('chat-log').innerHTML='';$('so-msg').textContent=t('out_msg');$('so-btn').textContent=t('in_btn');$('signed-out').classList.remove('hidden')}}])}
+function signIn(){$('signed-out').classList.add('hidden');render()}
+
+function closeMenu(){$('profile-menu').classList.add('hidden');$('avatar-btn').setAttribute('aria-expanded','false')}
+function toggleMenu(e){e.stopPropagation();const m=$('profile-menu');m.classList.toggle('hidden');$('avatar-btn').setAttribute('aria-expanded',!m.classList.contains('hidden'))}
+document.addEventListener('click',e=>{if(!$('profile-menu').contains(e.target))closeMenu()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();if(!$('modal').classList.contains('hidden'))closeModal()}});
+render();
+</script>
+</body>
+</html>
