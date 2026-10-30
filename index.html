@@ -1,337 +1,259 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="html-root">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mindvest - Version 2</title>
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script>tailwind.config={theme:{extend:{colors:{navy:{950:'#0A1424',900:'#0F1F35',800:'#16304B',700:'#1F5F7E'},teal:{brand:'#3FB8B0',soft:'#BAE6D3'}}}}}</script>
-<style>
-body.ar{font-family:'Cairo',sans-serif}body.en{font-family:'Inter',sans-serif}
-:focus-visible{outline:2px solid #3FB8B0;outline-offset:2px}
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindvest v2 - لوحة التحكم المالية المتقدمة</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header {
+            background: var(--card-bg);
+            padding: 20px 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        .logo-area h1 {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge {
+            background: #e0e7ff;
+            color: var(--primary);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        h2 {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .metric-box {
+            background: var(--bg-color);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .metric-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+        .qa-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .qa-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .qa-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+        .qa-btn:hover {
+            background: #e0e7ff;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .qa-output {
+            background: var(--bg-color);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            min-height: 80px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+    </style>
 </head>
-<body class="ar bg-slate-50 text-slate-800" id="body-tag">
+<body>
 
-<header class="bg-navy-950 border-b border-navy-800 sticky top-0 z-40 text-white">
-<div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-  <div class="flex items-center gap-3">
-    <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#1F5F7E"/><stop offset="1" stop-color="#7FE0C8"/></linearGradient></defs><path d="M3 34 L12 8 L20 24 L28 6 L37 34 L30 34 L27 20 L20 34 L14 22 L10 34 Z" fill="url(#g)"/></svg>
-    <div class="leading-tight" dir="ltr"><div class="text-xl font-bold font-en">Mind<span class="text-teal-brand">vest</span> <span class="text-xs bg-teal-brand text-navy-950 px-1.5 py-0.5 rounded font-sans">v2</span></div><div class="text-[10px] text-teal-soft font-en hidden sm:block">Enhanced Insights & Financial Scenario Planning</div></div>
-  </div>
-  <div class="flex items-center gap-3">
-    <button onclick="setLang(S.settings.lang==='ar'?'en':'ar')" id="lang-btn" class="bg-navy-800 hover:bg-teal-brand hover:text-navy-950 text-xs px-3 py-1.5 rounded-md font-semibold transition"></button>
-    <div class="relative">
-      <button id="avatar-btn" onclick="toggleMenu(event)" aria-haspopup="true" aria-expanded="false" aria-label="Account" class="w-10 h-10 rounded-full bg-teal-brand text-navy-950 flex items-center justify-center hover:ring-2 hover:ring-teal-soft transition">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></button>
-      <div id="profile-menu" class="hidden absolute end-0 mt-2 w-72 bg-white text-slate-800 rounded-xl border border-slate-200 shadow-xl overflow-hidden">
-        <div class="p-4 bg-navy-900 text-white"><div id="m-name" class="font-bold text-sm"></div><div id="m-email" class="text-xs text-teal-soft mt-0.5"></div><div id="m-type" class="text-[11px] mt-2 inline-block bg-navy-800 rounded px-2 py-0.5"></div></div>
-        <ul class="text-sm py-1">
-          <li><button onclick="openProfile()" class="w-full text-start px-4 py-2.5 hover:bg-slate-50" data-i="menu_profile"></button></li>
-          <li><button onclick="openSettings()" class="w-full text-start px-4 py-2.5 hover:bg-slate-50" data-i="menu_settings"></button></li>
-          <li><button onclick="confirmLogout()" class="w-full text-start px-4 py-2.5 hover:bg-red-50 text-red-700 border-t border-slate-100" data-i="menu_logout"></button></li>
-        </ul>
-      </div>
+<div class="container">
+    <header>
+        <div class="logo-area">
+            <h1>Mindvest <span class="badge">v2</span></h1>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">لوحة التخطيط المالي المحسنة</div>
+    </header>
+
+    <!-- المؤشرات المالية المتقدمة -->
+    <div class="card">
+        <h2>📊 المؤشرات المالية الحالية</h2>
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <div class="metric-title">معدل الحرق النقدي (Burn Rate)</div>
+                <div class="metric-value" id="burnRateVal">45,000 ر.س / شهرياً</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-title">نقطة التعادل (Break-Even)</div>
+                <div class="metric-value" id="breakEvenVal">6 أشهر</div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-title">المدرج النقدي (Runway)</div>
+                <div class="metric-value" id="runwayVal">14 شهراً</div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-</header>
 
-<main class="max-w-7xl mx-auto px-4 py-8">
-  <div class="mb-8"><h1 class="text-2xl font-bold text-navy-900" data-i="welcome_title"></h1><p class="text-slate-600 text-sm mt-1" data-i="welcome_desc"></p></div>
-  <div id="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"></div>
-  <div id="alert" class="mb-8"></div>
-
-  <!-- قسم الأسئلة السريعة التفاعلية (بدون الحاجة لمفتاح) -->
-  <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-8">
-    <h3 class="font-bold text-navy-900 text-base mb-1" data-i="chat_header"></h3>
-    <p class="text-xs text-slate-500 mb-4" data-i="chat_sub"></p>
-    <div id="chat-log" class="bg-slate-50 border border-slate-200 rounded-lg p-4 h-64 overflow-y-auto mb-3 space-y-3 text-xs" aria-live="polite"></div>
-    <div id="chips" class="flex flex-wrap gap-2 mb-3"></div>
-    <div class="flex gap-2">
-      <input id="chat-in" placeholder="اختر من الأسئلة الجاهزة أعلاه أو استفسر..." onkeydown="if(event.key==='Enter')sendPresetChat()" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-4 py-2.5 text-xs focus:outline-none focus:border-navy-700">
-      <button id="send-btn" onclick="sendPresetChat()" class="bg-navy-900 hover:bg-navy-700 text-white px-6 py-2.5 rounded-lg text-xs font-bold transition" data-i="btn_send"></button>
+    <!-- محاكاة السيناريو المالي -->
+    <div class="card">
+        <h2>⚙️ محاكاة سيناريو مالي</h2>
+        <div class="form-group">
+            <label for="monthlyExp">مصاريف التشغيل الشهرية (ريال):</label>
+            <input type="number" id="monthlyExp" value="45000" oninput="calculateMetrics()">
+        </div>
+        <div class="form-group">
+            <label for="cashReserve">السيولة النقدية المتاحة (ريال):</label>
+            <input type="number" id="cashReserve" value="630000" oninput="calculateMetrics()">
+        </div>
+        <div class="form-group">
+            <label for="growthRate">معدل النمو المتوقع:</label>
+            <select id="growthRate" onchange="calculateMetrics()">
+                <option value="1">نمو معتدل (10%)</option>
+                <option value="1.5">نمو سريع (25%)</option>
+                <option value="2">نمو استثنائي (40%)</option>
+            </select>
+        </div>
     </div>
-  </section>
 
-  <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div class="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-2">
-      <div><h3 class="font-bold text-navy-900" data-i="table_header"></h3><span class="text-xs text-slate-500" data-i="table_sub"></span></div>
-      <div class="flex gap-2">
-        <button onclick="openScenarioModal()" class="bg-teal-brand hover:bg-teal-soft text-navy-950 text-xs px-4 py-2 rounded-lg font-bold transition" data-i="btn_scenario">محاكاة سيناريو مالي</button>
-        <button onclick="openCompany()" class="bg-navy-900 hover:bg-navy-700 text-white text-xs px-4 py-2 rounded-lg font-bold transition" data-i="btn_add"></button>
-      </div>
+    <!-- النظام التفاعلي للأسئلة والأجوبة -->
+    <div class="card">
+        <h2>💬 الأسئلة الاستراتيجية الجاهزة (Preset Q&A)</h2>
+        <div class="qa-section">
+            <div class="qa-buttons">
+                <button class="qa-btn" onclick="showAnswer('market')">ما هو حجم السوق المستهدف؟</button>
+                <button class="qa-btn" onclick="showAnswer('model')">كيف يحقق المشروع أرباحاً؟</button>
+                <button class="qa-btn" onclick="showAnswer('financials')">ما هي خطة الاستدامة المالية؟</button>
+            </div>
+            <div class="qa-output" id="qaOutput">اضغط على أحد الأسئلة بالأعلى لعرض الإجابة النموذجية المعتمدة...</div>
+        </div>
     </div>
-    <div class="overflow-x-auto"><table class="w-full border-collapse">
-      <thead><tr class="bg-slate-50 text-slate-500 text-xs border-b border-slate-200">
-        <th class="py-3 px-6 text-start font-semibold" data-i="th_company"></th><th class="py-3 px-6 text-start font-semibold" data-i="th_sector"></th>
-        <th class="py-3 px-6 text-start font-semibold" data-i="th_runway"></th><th class="py-3 px-6 text-start font-semibold" data-i="th_burn"></th>
-        <th class="py-3 px-6 text-start font-semibold" data-i="th_status"></th><th class="py-3 px-6 text-start font-semibold" data-i="th_action"></th></tr></thead>
-      <tbody id="rows" class="text-xs divide-y divide-slate-100"></tbody></table></div>
-  </section>
-</main>
-
-<div id="modal" class="hidden fixed inset-0 z-50 bg-navy-950/70 flex items-center justify-center p-4" onclick="if(event.target===this)closeModal()">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col" role="dialog" aria-modal="true">
-    <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center"><h2 id="m-title" class="font-bold text-navy-900"></h2><button onclick="closeModal()" aria-label="Close" class="text-slate-400 hover:text-slate-700 text-xl leading-none">&times;</button></div>
-    <div id="m-body" class="px-6 py-5 overflow-y-auto text-sm"></div>
-    <div id="m-foot" class="px-6 py-4 border-t border-slate-200 flex flex-wrap justify-end gap-2"></div>
-  </div>
-</div>
-<div id="toast" class="hidden fixed bottom-6 start-1/2 -translate-x-1/2 z-[60] bg-navy-900 text-white text-xs px-4 py-2.5 rounded-lg shadow-lg"></div>
-<div id="signed-out" class="hidden fixed inset-0 z-[70] bg-navy-950 flex items-center justify-center p-6 text-center text-white">
-  <div><div class="text-3xl font-bold font-en mb-2" dir="ltr">Mind<span class="text-teal-brand">vest</span></div><p id="so-msg" class="text-sm text-teal-soft mb-6"></p>
-  <button onclick="signIn()" id="so-btn" class="bg-teal-brand hover:bg-teal-soft text-navy-950 font-bold text-sm px-6 py-2.5 rounded-lg"></button></div>
 </div>
 
 <script>
-const T={
-ar:{lang:"English",menu_profile:"المعلومات الشخصية",menu_settings:"الإعدادات",menu_logout:"تسجيل الخروج",
-org:"فريق استثماري",ind:"مستثمر فرد",acc_default:"حسابي",no_email:"لم يُضف بريد إلكتروني",
-welcome_title:"لوحة متابعة المحفظة الاستثمارية (الإصدار الثاني - V2)",welcome_desc:"تحليل مالي متقدم، إدارة مخاطر الفرص، ونظام محاكاة السيناريوهات المالية.",
-s1:"إجمالي الشركات في المحفظة",s1s:"شركة مسجلة",s2:"شركات ذات مخاطر مرتفعة",s2s:"سيولة أقل من الحد المحدد",s3:"متوسط السيولة المتبقية",s3s:"شهر",
-al_badge:"الإنذار المبكر والتوصيات الاستراتيجية",al_title:"تنبيه مالي وتقييم المخاطر",
-al_hi:"تنبيه مالي: سيولة {n} عند مستوى مخاطر مرتفعة",al_hi_d:"الفترة النقدية المتبقية {r} شهر بمعدل حرق شهري {b} {c}، وهي أقل من حد المخاطر المحدد ({t} أشهر).",
-al_ok:"حالة الاستقرار للمحفظة",al_ok_d:"جميع الشركات تتجاوز حد السيولة المحدد وتعمل بكفاءة تشغيلية مستقرة ({t} أشهر).",
-btn_plan:"عرض خطة المعالجة المقترحة",btn_contact:"التواصل مع إدارة الشركة",
-chat_header:"مساعد التحليل المالي الذكي (إجابات فورية)",chat_sub:"اضغط على الأسئلة الشائعة أدناه للحصول على تحليل فوري وموثوق.",chat_ph:"اختر سؤالاً من الأسئلة الجاهزة...",btn_send:"إرسال",
-chat_hello:"أهلاً بك. أنا مساعد التحليل المالي لـ Mindvest الإصدار الثاني. يمكنك النقر على الأسئلة المقترحة أدناه لعرض مؤشرات الحرق، نقطة التعادل، وتفاصيل السيولة فوراً.",
-chat_you:"أنت",chat_ai:"مساعد التحليل المالي",thinking:"جارٍ جلب التحليل المالي...",
-chip1:"ما هو متوسط معدل حرق السيولة للمحفظة؟",chip2:"كيف يتم تقييم مخاطر الشركات الناشئة؟",chip3:"ما هي نقطة التعادل (Break-even Point)؟",chip4:"عرض تفاصيل التقارير المالية والالتزامات",
-err_na:"يمكنك استخدام الأسئلة الجاهزة أدناه مباشرة دون الحاجة لمفتاح.",err_rate:"تم تجاوز حد الطلبات.",err_gen:"تعذّر إكمال الطلب.",
-table_header:"قائمة الشركات الناشئة وتحليل التقرير المالي",table_sub:"محدثة بناءً على ملاحظات الاستبيان والتقارير",btn_add:"إضافة شركة",btn_scenario:"محاكاة سيناريو",
-th_company:"الشركة الناشئة",th_sector:"القطاع",th_runway:"السيولة المتبقية (Runway)",th_burn:"الحرق الشهري",th_status:"التقييم المالي والالتزام",th_action:"الإجراء",
-sec_fintech:"تقنية مالية",sec_edu:"تقنية تعليمية",sec_ecom:"تجارة إلكترونية",sec_health:"تقنية صحية",sec_other:"أخرى",
-st_high:"مخاطر مرتفعة",st_watch:"تحت المراقبة",st_stable:"مستقر",mo:"شهر",
-btn_recs:"التقرير المالي",btn_edit:"تعديل",
-recs_t:"التقرير المالي المفصل: {n}",plan_t:"خطة المعالجة المقترحة: {n}",regen:"تحديث البيانات",close:"إغلاق",
-contact_t:"التواصل مع إدارة الشركة",f_company:"الشركة",f_subject:"الموضوع",f_msg:"الرسالة",f_draft:"صياغة تقرير المتابعة",f_send:"إرسال عبر البريد",no_mail:"أضيفوا بريد إدارة الشركة من خيار التعديل أولاً.",
-subj_def:"متابعة التقرير المالي ومؤشرات السيولة",drafting:"جارٍ الصياغة...",
-co_edit:"تعديل بيانات الشركة",co_new:"إضافة شركة",f_name_ar:"الاسم بالعربية",f_name_en:"الاسم بالإنجليزية",f_cash:"الرصيد النقدي",f_burn:"معدل الحرق الشهري",f_email:"بريد إدارة الشركة",
-save:"حفظ",cancel:"إلغاء",del:"حذف الشركة",del_q:"حذف هذه الشركة من المحفظة؟",saved:"تم الحفظ",deleted:"تم الحذف",need_name:"أدخلوا اسم الشركة.",need_num:"الحرق الشهري يجب أن يكون أكبر من صفر.",
-prof_t:"المعلومات الشخصية",f_type:"نوع الحساب",o_name:"اسم المؤسسة/الصندوق",o_reg:"رقم السجل التجاري",o_rep:"الممثل المفوّض",i_name:"الاسم الكامل",i_id:"رقم الهوية",i_phone:"رقم الجوال",f_acc_email:"البريد الإلكتروني",
-set_t:"الإعدادات",f_lang:"اللغة",f_thr:"حد المخاطر المرتفعة (بالأشهر)",f_thr_h:"تُصنَّف الشركة مرتفعة المخاطر إذا قلّت سيولتها عن هذا الحد.",f_cur:"العملة",f_key:"مفتاح Anthropic API (اختياري)",f_key_h:"الموقع يعمل بالكامل بالأسئلة الجاهزة دون الحاجة لمفتاح.",f_notif:"إشعارات التنبيه المبكر",
-out_t:"تسجيل الخروج",out_q:"هل تريدون تسجيل الخروج؟",out_btn:"تسجيل الخروج",out_msg:"تم تسجيل الخروج بنجاح.",in_btn:"تسجيل الدخول مجدداً"},
-en:{lang:"العربية",menu_profile:"Personal information",menu_settings:"Settings",menu_logout:"Sign out",
-org:"Fund Team",ind:"Individual Investor",acc_default:"My account",no_email:"No email added",
-welcome_title:"Portfolio Monitoring Dashboard (Version 2)",welcome_desc:"Advanced financial analytics, risk assessment, and financial scenario planning.",
-s1:"Companies in portfolio",s1s:"registered companies",s2:"High-risk companies",s2s:"Runway below threshold",s3:"Average remaining runway",s3s:"months",
-al_badge:"Early Warning & Strategic Recommendations",al_title:"Financial Alert & Risk Assessment",
-al_hi:"Financial alert: {n} is at a high-risk liquidity level",al_hi_d:"Remaining runway is {r} months at a monthly burn of {b} {c}, below threshold ({t} months).",
-al_ok:"Portfolio Stability Status",al_ok_d:"All companies exceed the liquidity runway threshold and operate stably ({t} months).",
-btn_plan:"View proposed mitigation plan",btn_contact:"Contact company management",
-chat_header:"Financial Analysis Assistant (Instant Q&A)",chat_sub:"Click on preset questions below for instant, reliable financial insights.",chat_ph:"Select a question above...",btn_send:"Send",
-chat_hello:"Welcome to Mindvest v2. Click on the suggested questions below to instantly view burn rates, break-even points, and liquidity details.",
-chat_you:"You",chat_ai:"Financial Assistant",thinking:"Loading financial analysis...",
-chip1:"What is the average portfolio burn rate?",chip2:"How are startup risks evaluated?",chip3:"What is the break-even point?",chip4:"View financial reports & obligations",
-err_na:"Preset questions are fully active below without needing a key.",err_rate:"Limit reached.",err_gen:"Could not complete request.",
-table_header:"Connected Startups & Financial Reports",table_sub:"Updated based on survey feedback",btn_add:"Add company",btn_scenario:"Scenario Simulation",
-th_company:"Startup",th_sector:"Sector",th_runway:"Remaining Runway",th_burn:"Monthly Burn",th_status:"Financial Status & Compliance",th_action:"Action",
-sec_fintech:"Fintech",sec_edu:"Edtech",sec_ecom:"E-commerce",sec_health:"Healthtech",sec_other:"Other",
-st_high:"High risk",st_watch:"Under watch",st_stable:"Stable",mo:"mo",
-btn_recs:"Financial Report",btn_edit:"Edit",
-recs_t:"Detailed Financial Report: {n}",plan_t:"Proposed Mitigation Plan: {n}",regen:"Refresh Data",close:"Close",
-contact_t:"Contact Company Management",f_company:"Company",f_subject:"Subject",f_msg:"Message",f_draft:"Draft Report",f_send:"Send by email",no_mail:"Add management email in Edit first.",
-subj_def:"Follow-up on financial report and runway",drafting:"Drafting...",
-co_edit:"Edit Company Data",co_new:"Add Company",f_name_ar:"Arabic Name",f_name_en:"English Name",f_cash:"Cash Balance",f_burn:"Monthly Burn Rate",f_email:"Management Email",
-save:"Save",cancel:"Cancel",del:"Delete Company",del_q:"Remove company from portfolio?",saved:"Saved",deleted:"Deleted",need_name:"Enter company name.",need_num:"Monthly burn must be greater than zero.",
-prof_t:"Personal Information",f_type:"Account Type",o_name:"Fund/Org Name",o_reg:"CR Number",o_rep:"Representative",i_name:"Full Name",i_id:"National ID",i_phone:"Mobile Number",f_acc_email:"Email",
-set_t:"Settings",f_lang:"Language",f_thr:"High-risk threshold (months)",f_thr_h:"A company is high risk if runway is below this.",f_cur:"Currency",f_key:"Anthropic API Key (Optional)",f_key_h:"App works fully with preset Q&A.",f_notif:"Early-warning notifications",
-out_t:"Sign out",out_q:"Do you want to sign out?",out_btn:"Sign out",out_msg:"Signed out.",in_btn:"Sign in again"}};
+    function calculateMetrics() {
+        const exp = parseFloat(document.getElementById('monthlyExp').value) || 0;
+        const cash = parseFloat(document.getElementById('cashReserve').value) || 0;
+        
+        if (exp > 0) {
+            const runway = (cash / exp).toFixed(1);
+            document.getElementById('runwayVal').innerText = runway + ' شهراً';
+            document.getElementById('burnRateVal').innerText = exp.toLocaleString() + ' ر.س / شهرياً';
+        }
+    }
 
-const SECT=['sec_fintech','sec_edu','sec_ecom','sec_health','sec_other'];
-const DEF={settings:{lang:'ar',thr:3,cur:'SAR',notif:true,apiKey:''},
-account:{type:'org',email:'',oName:'صندوق الاستثمار الناشئ',oReg:'1010987654',oRep:'جود (مدير المحفظة)',iName:'',iId:'',phone:''},
-companies:[
-{id:'c1',ar:'شركة سهم للتقنية المالية',en:'Sahm Tech',sector:'sec_fintech',cash:216000,burn:120000,email:'finance@sahmtech.example',revenue:'450,000 SAR',recurring:'75%',liabilities:'قصير الأجل: منخفضة',breakEven:'450,000 SAR'},
-{id:'c2',ar:'شركة سلة الخدمات اللوجستية',en:'Sallah Services',sector:'sec_ecom',cash:378000,burn:90000,email:'ops@sallah.example',revenue:'620,000 SAR',recurring:'60%',liabilities:'متوسطة',breakEven:'380,000 SAR'},
-{id:'c3',ar:'شركة لغتي للتعليم الذكي',en:'Loghati Education',sector:'sec_edu',cash:880000,burn:80000,email:'info@loghati.example',revenue:'950,000 SAR',recurring:'85%',liabilities:'منعدمة',breakEven:'300,000 SAR'}]};
-
-let S;try{S=JSON.parse(localStorage.getItem('mv_state_v2'))}catch(e){}
-S=Object.assign(JSON.parse(JSON.stringify(DEF)),S||{});
-function save(){try{localStorage.setItem('mv_state_v2',JSON.stringify(S))}catch(e){}}
-const t=(k,v)=>{let s=T[S.settings.lang][k]??k;for(const x in v)s=s.replace('{'+x+'}',v[x]);return s};
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const nm=c=>c[S.settings.lang]||c.ar||c.en;
-const runway=c=>c.cash/c.burn;
-const fmt=n=>Number(n).toLocaleString(S.settings.lang==='ar'?'ar-SA-u-nu-latn':'en-US',{maximumFractionDigits:1});
-function status(c){const r=runway(c),h=S.settings.thr;return r<h?'high':r<h*2?'watch':'stable'}
-const ST={high:['bg-red-100 text-red-800','text-red-700','st_high'],watch:['bg-amber-100 text-amber-800','text-amber-700','st_watch'],stable:['bg-emerald-100 text-emerald-800','text-emerald-700','st_stable']};
-const accName=()=>S.account.type==='org'?S.account.oName:S.account.iName;
-
-function toast(m){const e=$('toast');e.textContent=m;e.classList.remove('hidden');clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.add('hidden'),2400)}
-function openModal(title,body,actions){$('m-title').textContent=title;$('m-body').innerHTML=body;const f=$('m-foot');f.innerHTML='';
- (actions||[]).forEach(a=>{const b=document.createElement('button');b.textContent=a.label;b.id=a.id||'';
-  b.className='text-xs px-4 py-2 rounded-lg font-bold transition '+(a.cls||'border border-slate-300 text-slate-700 hover:bg-slate-50');b.onclick=a.fn;f.appendChild(b)});
- $('modal').classList.remove('hidden')}
-function closeModal(){$('modal').classList.add('hidden')}
-const P='bg-navy-900 hover:bg-navy-700 text-white';
-const inp='w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-navy-700';
-const fld=(id,l,v,type='text',extra='')=>`<label class="block mb-3 text-xs font-semibold text-slate-600">${esc(l)}<input id="${id}" type="${type}" value="${esc(v)}" ${extra} class="${inp} mt-1 font-normal"></label>`;
-
-/* ---------- Render ---------- */
-function render(){
- const L=S.settings.lang,root=$('html-root');root.lang=L;root.dir=L==='ar'?'rtl':'ltr';$('body-tag').className=L+' bg-slate-50 text-slate-800';
- $('lang-btn').textContent=t('lang');
- document.querySelectorAll('[data-i]').forEach(e=>e.textContent=t(e.dataset.i));
- $('chat-in').placeholder=t('chat_ph');
- $('m-name').textContent=accName()||t('acc_default');$('m-email').textContent=S.account.email||t('no_email');$('m-type').textContent=t(S.account.type);
- const C=S.companies,hi=C.filter(c=>status(c)==='high'),avg=C.length?C.reduce((a,c)=>a+runway(c),0)/C.length:0;
- const card=(b,l,v,vc,s)=>`<div class="bg-white p-6 rounded-xl border border-slate-200 border-t-4 ${b} shadow-sm"><p class="text-xs text-slate-500 font-medium">${l}</p><h3 class="text-3xl font-bold ${vc} mt-2">${v}</h3><span class="text-xs ${vc} mt-2 inline-block font-semibold">${s}</span></div>`;
- $('stats').innerHTML=card('border-t-teal-brand',t('s1'),C.length,'text-navy-900',t('s1s'))+card(hi.length?'border-t-red-600':'border-t-emerald-500',t('s2'),hi.length,hi.length?'text-red-700':'text-emerald-700',t('s2s'))+card('border-t-navy-700',t('s3'),fmt(avg),'text-navy-700',t('s3s'));
- const w=hi.sort((a,b)=>runway(a)-runway(b))[0];
- $('alert').innerHTML=`<div class="bg-navy-900 rounded-2xl p-6 text-white shadow-lg border border-navy-800 border-s-4 ${w?'border-s-red-500':'border-s-teal-brand'}">
-  <div class="flex flex-wrap items-center gap-3 mb-4"><span class="bg-teal-brand text-navy-950 text-xs px-3 py-1 rounded-md font-bold">${t('al_badge')}</span><h2 class="text-base font-bold">${t('al_title')}</h2></div>
-  <div class="bg-navy-800/70 rounded-xl p-4 border border-teal-brand/30"><h4 class="font-bold ${w?'text-red-300':'text-teal-soft'} text-sm">${w?esc(t('al_hi',{n:nm(w)})):t('al_ok')}</h4>
-  <p class="text-xs text-slate-200 mt-1 leading-relaxed">${w?esc(t('al_hi_d',{r:fmt(runway(w)),b:fmt(w.burn),c:S.settings.cur,t:S.settings.thr})):esc(t('al_ok_d',{t:S.settings.thr}))}</p>
-  ${w?`<div class="mt-4 flex flex-wrap gap-3"><button onclick="openPlan('${w.id}')" class="bg-teal-brand hover:bg-teal-soft text-navy-950 text-xs px-4 py-2 rounded-lg font-bold transition">${t('btn_plan')}</button><button onclick="openContact('${w.id}')" class="border border-teal-brand hover:bg-white/10 text-xs px-4 py-2 rounded-lg transition">${t('btn_contact')}</button></div>`:''}</div></div>`;
- 
- $('rows').innerHTML=C.map(c=>{const s=ST[status(c)];return `<tr class="hover:bg-slate-50"><td class="py-4 px-6 font-semibold text-navy-900">${esc(nm(c))}</td><td class="py-4 px-6 text-slate-500">${t(c.sector)}</td>
-  <td class="py-4 px-6 font-bold ${s[1]}">${fmt(runway(c))} ${t('mo')}</td><td class="py-4 px-6 text-slate-600">${fmt(c.burn)} ${S.settings.cur}</td>
-  <td class="py-4 px-6"><span class="${s[0]} px-2.5 py-1 rounded font-semibold">${t(s[2])}</span></td>
-  <td class="py-4 px-6 whitespace-nowrap"><button onclick="openRecs('${c.id}')" class="text-navy-700 hover:underline font-bold me-4">${t('btn_recs')}</button><button onclick="openCompany('${c.id}')" class="text-slate-600 hover:underline font-semibold">${t('btn_edit')}</button></td></tr>`}).join('');
-
- const chipsArr=[
-  {q:S.settings.lang==='ar'?"ما هو متوسط معدل حرق السيولة للمحفظة؟":"What is the average portfolio burn rate?", k:'chip1'},
-  {q:S.settings.lang==='ar'?"كيف يتم تقييم مخاطر الشركات الناشئة؟":"How are startup risks evaluated?", k:'chip2'},
-  {q:S.settings.lang==='ar'?"ما هي نقطة التعادل (Break-even Point)؟":"What is the break-even point?", k:'chip3'},
-  {q:S.settings.lang==='ar'?"عرض تفاصيل التقارير المالية والالتزامات":"View financial reports & obligations", k:'chip4'}
- ];
- $('chips').innerHTML=chipsArr.map(item=>`<button onclick="sendPresetChat('${item.q}')" class="text-[11px] border border-slate-300 hover:border-navy-700 hover:bg-slate-50 text-slate-600 px-3 py-1 rounded-full">${t(item.k)}</button>`).join('');
- const log=$('chat-log');if(!log.children.length)addMsg('ai',t('chat_hello'),true);
-}
-function setLang(l){S.settings.lang=l;save();render();if(!$('modal').classList.contains('hidden'))closeModal()}
-
-/* ---------- Preset Chat Engine (بدون مفتاح API) ---------- */
-function addMsg(who,text,hello){const ai=who==='ai',d=document.createElement('div');
- d.className='flex items-start gap-2'+(ai?'':' flex-row-reverse');
- d.innerHTML=`<div class="${ai?'bg-navy-900 text-white':'bg-teal-brand text-navy-950'} px-2 py-1 rounded font-bold whitespace-nowrap"></div><div class="bg-white p-3 rounded-lg border border-slate-200 text-slate-700 whitespace-pre-wrap max-w-[85%]"></div>`;
- d.children[0].textContent=ai?t('chat_ai'):t('chat_you');d.children[1].textContent=text;$('chat-log').appendChild(d);$('chat-log'].scrollTop=1e9;return d.children[1]}
-
-function sendPresetChat(q){
- const inp=$('chat-in');q=(typeof q==='string'?q:inp.value).trim();if(!q)return;
- inp.value='';addMsg('user',q);
- 
- let reply="";
- const l=S.settings.lang;
- if(q.includes("معدل حرق")||q.includes("burn rate")){
-  const avgBurn=S.companies.reduce((a,c)=>a+c.burn,0)/S.companies.length;
-  reply = l==='ar'? `متوسط معدل حرق السيولة الشهري لشركات المحفظة هو ${fmt(avgBurn)} ${S.settings.cur} شهرياً. إجمالي النقد المتاح يكفي لمتوسط سيولة متبقية يقدر بـ 5.7 أشهر.` : `The average monthly burn rate across portfolio startups is ${fmt(avgBurn)} ${S.settings.cur}. Total cash provides an average remaining runway of 5.7 months.`;
- } else if(q.includes("مخاطر")||q.includes("risks")){
-  reply = l==='ar'? `يقيم النظام مخاطر الشركات الناشئة عبر تحليل نسبة النقد المتاح مقابل معدل الحرق الشهري (Runway)، والالتزامات قصيرة الأجل. الشركات التي تقل سيولتها عن ${S.settings.thr} أشهر تصنف ضمن فئة المخاطر المرتفعة للتنبيه المبكر.` : `Risk is evaluated by analyzing the cash runway against monthly burn and short-term obligations. Companies below ${S.settings.thr} months are flagged as high risk.`;
- } else if(q.includes("تعادل")||q.includes("Break-even")){
-  reply = l==='ar'? `حساب نقطة التعادل (Break-even Point): تتطلب الشركات الناشئة في المتوسط مبيعات بقيمة تتراوح بين 300,000 إلى 450,000 ريال لتغطية المصاريف التشغيلية وتحقيق صافي أرباح تشغيلية مستدامة.` : `Break-even analysis: Startups require an average sales volume between 300,000 to 450,000 SAR to cover operating expenses and achieve profitability.`;
- } else if(q.includes("التقارير")||q.includes("financial reports")){
-  reply = l==='ar'? `تفاصيل التقارير المالية للشركات:\n` + S.companies.map(c=>`- ${nm(c)}: إيرادات ${c.revenue || 'محدثة'} | نسبة الإيرادات المتكررة: ${c.recurring || 'غير محدّدة'} | الالتزامات القانونية: ${c.liabilities || 'آمنة'}`).join('\n') : `Company Financial Reports:\n` + S.companies.map(c=>`- ${nm(c)}: Revenue ${c.revenue} | Recurring: ${c.recurring} | Liabilities: ${c.liabilities}`).join('\n');
- } else {
-  reply = l==='ar'? `بناءً على تحليل البيانات المالية لـ Mindvest الإصدار الثاني، جميع المؤشرات متاحة عبر جداول الشركات ولوحة التحكم الرئيسية، مع توفر خيار محاكاة السيناريوهات المالية.` : `Based on Mindvest v2 financial data, all metrics are available through company tables and dashboard panels, with scenario simulation enabled.`;
- }
- 
- setTimeout(()=>{addMsg('ai',reply)},300);
-}
-
-/* ---------- Recommendations / Plan ---------- */
-function analysis(titleKey,id){
- const c=S.companies.find(x=>x.id===id);if(!c);
- const l=S.settings.lang;
- const repText = l==='ar'?
-  `تقرير تحليلي شامل للشركة: ${nm(c)} (${t(c.sector)})\n`+
-  `1. الرصيد النقدي الحالي: ${fmt(c.cash)} ${S.settings.cur}\n`+
-  `2. معدل الحرق الشهري: ${fmt(c.burn)} ${S.settings.cur}\n`+
-  `3. السيولة المتبقية (Runway): ${fmt(runway(c))} أشهر\n`+
-  `4. الإيرادات المتكررة ونسبة النمو: ${c.recurring || '70%'}\n`+
-  `5. الالتزامات قصيرة الأجل ومستوى المخاطر: ${c.liabilities || 'منخفضة الالتزامات'}\n`+
-  `6. نقطة التعادل المستهدفة: ${c.breakEven || '400,000 SAR'}\n\n`+
-  `التوصيات الاستراتيجية الموصى بها:\n- إعادة جدولة المصاريف التسويقية التشغيلية بنسبة 15%.\n- تأمين جولة تمويلية جسرية (Bridge Round) خلال الـ 60 يوماً القادمة.\n- متابعة التدفقات النقدية التشغيلية أسبوعياً.`
-  :
-  `Detailed Financial Report for: ${nm(c)}\n1. Cash Balance: ${fmt(c.cash)} ${S.settings.cur}\n2. Monthly Burn: ${fmt(c.burn)} ${S.settings.cur}\n3. Runway: ${fmt(runway(c))} months\n4. Recurring Revenue: ${c.recurring}\n5. Recommended action: Optimize operational costs and secure bridge round.`;
-
- openModal(t(titleKey,{n:nm(c)}),`<div class="whitespace-pre-wrap leading-relaxed text-slate-700 text-xs">${esc(repText)}</div>`,[{label:t('close'),cls:P,fn:closeModal}]);
-}
-const openRecs=id=>analysis('recs_t',id);
-const openPlan=id=>analysis('plan_t',id);
-
-/* ---------- محاكاة السيناريوهات المالية (Financial Scenario Planning) ---------- */
-function openScenarioModal(){
- openModal("محاكاة السيناريوهات المالية (Financial Scenario Planning)", 
-  `<div class="space-y-4 text-xs">
-    <p class="text-slate-600">هذه الميزة تتيح لك تجربة افتراضية فورية لتأثير تغيرات المبيعات أو التكاليف على السيولة المتبقية للشركة الناشئة.</p>
-    <label class="block font-semibold">اختر الشركة للاختبار:
-      <select id="sc-co" class="${inp} mt-1">${S.companies.map(c=>`<option value="${c.id}">${nm(c)}</option>`).join('')}</select>
-    </label>
-    <label class="block font-semibold">سيناريو التغيير الافتراضي:
-      <select id="sc-type" class="${inp} mt-1">
-        <option value="-20">انخفاض المبيعات بنسبة 20%</option>
-        <option value="-40">انخفاض المبيعات بنسبة 40%</option>
-        <option value="+20">زيادة الحرق التشغيلي بنسبة 20%</option>
-      </select>
-    </label>
-    <div id="sc-result" class="p-3 bg-slate-100 rounded-lg hidden font-semibold text-navy-900"></div>
-   </div>`,
-  [{label:"إلغاء",fn:closeModal},{label:"تشغيل المحاكاة",cls:P,fn:runSimulation}]
-);
-}
-function runSimulation(){
- const coId=$('sc-co').value, val=+$('sc-type').value;
- const c=S.companies.find(x=>x.id===coId);if(!c)return;
- let newBurn=c.burn;
- if(val===-20) newBurn=c.burn*1.15; // انخفاض المبيعات يزيد الضغط أو يقلل الإيرادات
- if(val===-40) newBurn=c.burn*1.35;
- if(val===+20) newBurn=c.burn*1.20;
- const newRunway=(c.cash/newBurn).toFixed(1);
- const res=$('sc-result');
- res.classList.remove('hidden');
- res.innerHTML=`النتيجة بعد المحاكاة (${c.ar}):<br>معدل الحرق الجديد المتوقع: ${fmt(newBurn)} ${S.settings.cur} شهرياً.<br>السيولة المتبقية الجديدة (Runway): <span class="text-red-600 font-bold">${newRunway} أشهر</span>.`;
-}
-
-/* ---------- Contact ---------- */
-function openContact(id){
- const opts=S.companies.map(c=>`<option value="${c.id}" ${c.id===id?'selected':''}>${esc(nm(c))}</option>`).join('');
- openModal(t('contact_t'),`<label class="block mb-3 text-xs font-semibold text-slate-600">${t('f_company')}<select id="k-co" class="${inp} mt-1 font-normal">${opts}</select></label>${fld('k-sub',t('f_subject'),t('subj_def'))}
- <label class="block text-xs font-semibold text-slate-600">${t('f_msg')}<textarea id="k-msg" rows="7" class="${inp} mt-1 font-normal">عزيزي فريق الإدارة، بناءً على المراجعة المالية الدورية لمنصة Mindvest v2، نأمل تزويدنا بآخر تحديث للتدفقات النقدية وموقف الـ Runway.</textarea></label>`,
- [{label:t('f_send'),cls:P,fn:send}]);
- function send(){const c=S.companies.find(x=>x.id===$('k-co').value);if(!c.email){toast(t('no_mail'));return}
-  location.href='mailto:'+encodeURIComponent(c.email)+'?subject='+encodeURIComponent($('k-sub').value)+'&body='+encodeURIComponent($('k-msg').value)}}
-
-/* ---------- Company edit ---------- */
-function openCompany(id){
- const c=S.companies.find(x=>x.id===id)||{ar:'',en:'',sector:'sec_other',cash:'',burn:'',email:'',revenue:'',recurring:'',liabilities:''};
- const so=SECT.map(k=>`<option value="${k}" ${k===c.sector?'selected':''}>${t(k)}</option>`).join('');
- const acts=[{label:t('cancel'),fn:closeModal},{label:t('save'),cls:P,fn:save1}];
- if(id)acts.unshift({label:t('del'),cls:'border border-red-300 text-red-700 hover:bg-red-50 me-auto',fn:()=>{if(confirm(t('del_q'))){S.companies=S.companies.filter(x=>x.id!==id);save();render();closeModal();toast(t('deleted'))}}});
- openModal(id?t('co_edit'):t('co_new'),fld('e-ar',t('f_name_ar'),c.ar)+fld('e-en',t('f_name_en'),c.en)+`<label class="block mb-3 text-xs font-semibold text-slate-600">${t('th_sector')}<select id="e-sec" class="${inp} mt-1 font-normal">${so}</select></label>`+
- `<div class="grid grid-cols-2 gap-3">${fld('e-cash',t('f_cash')+' ('+S.settings.cur+')',c.cash,'number','min="0"')}${fld('e-burn',t('f_burn')+' ('+S.settings.cur+')',c.burn,'number','min="1"')}</div>`+fld('e-mail',t('f_email'),c.email,'email'),acts);
- function save1(){const ar=$('e-ar').value.trim(),en=$('e-en').value.trim(),burn=+$('e-burn').value,cash=+$('e-cash').value||0;
-  if(!ar&&!en){toast(t('need_name'));return}if(!(burn>0)){toast(t('need_num'));return}
-  const o={id:id||'c'+Date.now(),ar:ar||en,en:en||ar,sector:$('e-sec').value,cash,burn,email:$('e-mail').value.trim(),revenue:c.revenue||'500,000 SAR',recurring:'70%',liabilities:'منخفضة'};
-  if(id)S.companies=S.companies.map(x=>x.id===id?o:x);else S.companies.push(o);
-  save();render();closeModal();toast(t('saved'))}}
-
-/* ---------- Profile / settings / logout ---------- */
-function openProfile(){closeMenu();const a=S.account;
- const body=()=>`<div class="mb-4 text-xs font-semibold text-slate-600">${t('f_type')}<div class="flex gap-2 mt-1">${['org','ind'].map(k=>`<button data-ty="${k}" class="flex-1 py-2 rounded-lg border font-semibold ${a.type===k?'bg-navy-900 text-white border-navy-900':'bg-white text-slate-600 border-slate-300'}">${t(k)}</button>`).join('')}</div></div>`+
-  (a.type==='org'?fld('p-a',t('o_name'),a.oName)+fld('p-b',t('o_reg'),a.oReg)+fld('p-c',t('o_rep'),a.oRep):fld('p-a',t('i_name'),a.iName)+fld('p-b',t('i_id'),a.iId)+fld('p-c',t('i_phone'),a.phone,'tel'))+fld('p-e',t('f_acc_email'),a.email,'email');
- const keep=()=>{if(!$('p-a'))return;const o=a.type==='org';a[o?'oName':'iName']=$('p-a').value.trim();a[o?'oReg':'iId']=$('p-b').value.trim();a[o?'oRep':'phone']=$('p-c').value.trim();a.email=$('p-e').value.trim()};
- const draw=()=>{$('m-body').innerHTML=body();$('m-body').querySelectorAll('[data-ty]').forEach(b=>b.onclick=()=>{keep();a.type=b.dataset.ty;draw()})};
- openModal(t('prof_t'),'',[{label:t('cancel'),fn:()=>{S.account=JSON.parse(localStorage.getItem('mv_state_v2')||'null')?.account||DEF.account;closeModal()}},{label:t('save'),cls:P,fn:()=>{keep();save();render();closeModal();toast(t('saved'))}}]);draw()}
-
-function openSettings(){closeMenu();const s=S.settings;
- openModal(t('set_t'),`<label class="block mb-3 text-xs font-semibold text-slate-600">${t('f_lang')}<select id="s-l" class="${inp} mt-1 font-normal"><option value="ar" ${s.lang==='ar'?'selected':''}>العربية</option><option value="en" ${s.lang==='en'?'selected':''}>English</option></select></label>`+
- fld('s-t',t('f_thr'),s.thr,'number','min="1" max="24"')+`<p class="text-[11px] text-slate-500 -mt-2 mb-3">${t('f_thr_h')}</p>`+fld('s-c',t('f_cur'),s.cur)+
- `<label class="flex items-center gap-2 text-xs font-semibold text-slate-600"><input id="s-n" type="checkbox" ${s.notif?'checked':''}> ${t('f_notif')}</label>`,
- [{label:t('cancel'),fn:closeModal},{label:t('save'),cls:P,fn:()=>{s.lang=$('s-l').value;s.thr=Math.max(1,+$('s-t').value||3);s.cur=$('s-c').value.trim()||'SAR';s.notif=$('s-n').checked;save();render();closeModal();toast(t('saved'))}}])}
-
-function confirmLogout(){closeMenu();openModal(t('out_t'),`<p>${t('out_q')}</p>`,[{label:t('cancel'),fn:closeModal},{label:t('out_btn'),cls:'bg-red-700 hover:bg-red-800 text-white',fn:()=>{closeModal();$('so-msg').textContent=t('out_msg');$('so-btn').textContent=t('in_btn');$('signed-out').classList.remove('hidden')}}])}
-function signIn(){$('signed-out').classList.add('hidden');render()}
-
-function closeMenu(){$('profile-menu').classList.add('hidden');$('avatar-btn').setAttribute('aria-expanded','false')}
-function toggleMenu(e){e.stopPropagation();const m=$('profile-menu');m.classList.toggle('hidden');$('avatar-btn').setAttribute('aria-expanded',!m.classList.contains('hidden'))}
-document.addEventListener('click',e=>{if(!$('profile-menu').contains(e.target))closeMenu()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();if(!$('modal').classList.contains('hidden'))closeModal()}});
-render();
+    function showAnswer(type) {
+        const output = document.getElementById('qaOutput');
+        if (type === 'market') {
+            output.innerText = 'يستهدف السوق الواعد للشركات الناشئة ومنصات التقنية المالية في المملكة العربية السعودية، مع التركيز على رواد الأعمال والمستثمرين الملائكيين.';
+        } else if (type === 'model') {
+            output.innerText = 'يعتمد نموذج العمل على الاشتراكات الشهرية للخدمات المتقدمة، بالإضافة إلى رسوم تقديم الاستشارات المالية والتقارير التحليلية الآلية.';
+        } else if (type === 'financials') {
+            output.innerText = 'تعتمد خطة الاستدامة على ضبط معدل الحرق النقدي، تنويع مصادر الدخل، والوصول إلى نقطة التعادل خلال النصف الأول من السنة التشغيلية.';
+        }
+    }
 </script>
+
 </body>
 </html>
